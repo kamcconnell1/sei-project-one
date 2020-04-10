@@ -38,7 +38,7 @@ justify-content: center;
   width: 11.11%;
 }
 
-.grid div.bomb {
+.grid div#bomb {
   background-color: darkgoldenrod;
   background-repeat: no-repeat;
   background-size: contain;

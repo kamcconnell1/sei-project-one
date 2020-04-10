@@ -8,12 +8,12 @@ function init() {
   // * Grid Variables
   const width = 9
   const cellCount = width * width
-  const bombCount = 10 //this will need to be updated to link to width when size increases 
+  const bombCount = 3 //this will need to be updated to link to width when size increases 
 
   // * Game Variables
   let bombPosition = []
   const bombPositions = []
-  
+  let bombHints = []
 
   // * Functions 
   function createCells() {
@@ -23,7 +23,6 @@ function init() {
       grid.appendChild(cell)
       cell.textContent = i
       cells.push(cell)
-      // console.log(cells)
     }
   }
   
@@ -31,28 +30,37 @@ function init() {
     // Position the bombs
     for (let i = 0; i <= bombCount - 1; i++) {
       bombPosition = Math.floor(Math.random() * cellCount)
-      cells[bombPosition].classList.add('bomb')
+      cells[bombPosition].id = 'bomb'
       console.log(`Bomb positioned in div ${bombPosition}`)
       
       bombPositions.push(bombPosition)
     }
     console.log(bombPositions)
     
-    const bombHints = bombPositions.map(num => {
-      return [ num - 10, num - 9, num - 8, num - 1, 
-        num + 1, num + 8, num + 9, num + 10]
+    const bombHint = bombPositions.map(num => {
+      return ([ num - 10, num - 9, num - 8, num - 1, 
+        num + 1, num + 8, num + 9, num + 10])
     } )
+  
+    bombHints = bombHint.flat().filter(num => num >= 0 && num < cellCount)
+    
     console.log(bombHints)
-    for (let i = 0; i <= cellCount; i++) {
-      // cells[bombHints].classList.add('bomb-hint')
-      
-    }
 
-    // bombHints.forEach(element => {
-    //   element.classList.add('bomb-hint')
-    // cells[bombHints].classList.add('bomb-hint')
-    // })
-    console.log(bombHints)
+    
+
+
+    // if (!cells[item].classList.contains('bomb')
+    bombHints.forEach(item => {
+      cells[item].classList.add('bomb-hint')
+    })
+    // function removeHints() {
+    //   for (let i = 0; i <= cellCount; i++) {
+    //     if (cells[i].classList.contains('bomb' && 'bomb-hint') === true) {
+    //       cells[i].classList.remove('bomb-hint')
+    //     } 
+    //   }
+    // }
+    
   }
  
 
