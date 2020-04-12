@@ -13,7 +13,7 @@ function init() {
   // * Game Variables
   let bombPosition = []
   const bombPositions = []
-  let bombHints = []
+
 
   // * Functions 
   function createCells() {
@@ -21,94 +21,76 @@ function init() {
     for (let i = 0; i < cellCount; i++) {
       const cell = document.createElement('div')
       grid.appendChild(cell)
-      cell.textContent = i
+      // cell.textContent = i
       cells.push(cell)
     }
   }
-  
+
   function positionBombs() {
     // Position the bombs
     for (let i = 0; i <= bombCount - 1; i++) {
       bombPosition = Math.floor(Math.random() * cellCount)
-      if (cells[bombPosition].id === 'bomb') {
+      if (cells[bombPosition].classList.contains('bomb')) {
         bombPosition = Math.floor(Math.random() * cellCount)
-        cells[bombPosition].id = 'bomb' 
+        cells[bombPosition].classList.add('bomb')
       } else {
-        cells[bombPosition].id = 'bomb' 
+        cells[bombPosition].classList.add('bomb')
       }
-      console.log(`Bomb in div ${bombPosition}`
-      
-    
-        
-      )
-        
       bombPositions.push(bombPosition)
     }
-    console.log(bombPositions)
+    console.log(`Bomb in divs ${bombPositions}`)
   }
-
-
 
   function positionHints() {
-    const x = bombPosition % width
-    const y = Math.floor(bombPosition / width)
+    
+    cells.forEach((cell, i) => {
+      // console.log('I am the cell', cell)
+        
+      if (!cell.hasAttributes('.bomb')) {
+        // console.log(cell,'has bomb?', !cell.hasAttributes('.bomb'))
+        const value = 
+        (`${(cells[i - 10] && cells[i - 10].hasAttributes('.bomb')) ? 1 : 0}
+        +
+        ${(cells[i - 9] && cells[i - 9].hasAttributes('.bomb')) ? 1 : 0}
+        +
+        ${(cells[i - 8] && cells[i - 8].hasAttributes('.bomb')) ? 1 : 0} 
+        +
+        ${(cells[i - 1] && cells[i - 1].hasAttributes('.bomb')) ? 1 : 0} 
+        +
+        ${(cells[i + 1] && cells[i + 1].hasAttributes('.bomb')) ? 1 : 0} 
+        +
+        ${(cells[i + 8] && cells[i + 8].hasAttributes('.bomb')) ? 1 : 0} 
+        +
+        ${(cells[i + 9] && cells[i + 9].hasAttributes('.bomb')) ? 1 : 0} 
+        +
+        ${(cells[i + 10] && cells[i + 10].hasAttributes('.bomb')) ? 1 : 0}`).replace(/[^\d.-]/g, '').split('')
+        
 
-
-    const bombHint = bombPositions.map(num => {
-      if (x < width - 1) return num + 1  // cell to right
-      if (x > 0) return num - 1  // cell to left
-      if (y > 0) return num + 9  // cell to south
-      if (y < width - 1) return num - 9  // cell to north 
-      
-      
-      
-      
-      return ([ num - 10, num - 9, num - 8, num - 1, 
-        num + 1, num + 8, num + 9, num + 10])
-    } )
-
-    // const x = bombPosition % width
-    // const y = Math.floor(bombPosition / width)
-      
-    // switch (bombPosition) {
-    //   // *this will calculate the new index
-    //   case 39: 
-    //     // console.log('should move right')
-    //     if (x < width - 1) pikaPosition++
-    //     break
-    //   case 37: 
-    //     // console.log('should move left')
-    //     if (x > 0) pikaPosition--
-    //     break
-    //   case 38: 
-    //     // console.log('should move up') 
-    //     if ( y > 0) pikaPosition -= width
-    //     break
-    //   case 40:
-    //     // console.log('should move down')
-    //     if (y < width - 1) pikaPosition += width
-    //     break
-    //   default:
-    //     console.log('invalid key do nothing')
-
-
-
-
-
-
-
-    bombHints = bombHint.flat().filter(num => num >= 0 && num < cellCount)
-    console.log(bombHints)
-
-    bombHints.forEach(item => {
-      cells[item].classList.add('bomb-hint')
+        // console.log('value is', (value))
+        const hintNum = value.reduce((a, b) => {
+          return a + parseInt(b)
+        },0)
+        cell.textContent = hintNum > 0 ? hintNum : ''
+      }
     })
-  // } 
   }
 
+  function coverGrid() {
+    cells.map(cell => {
+      cell.classList.add('cover')
+    })
+  }
 
-
-
+  function revealCell(event) {
+    // console.log(`just clicked ${event.target.textContent}`)
+    if (event.target.classList.contains('bomb')) {
+      cells.map(cell => {
+        cell.classList.remove('cover')
+      })
+    } else {
+      event.target.classList.remove('cover')
+    }
+  }
 
 
 
@@ -116,5 +98,7 @@ function init() {
   // * Event Listeners
   window.addEventListener('load', positionBombs)
   window.addEventListener('load', positionHints)
+  window.addEventListener('load', coverGrid)
+  cells.forEach(cell => cell.addEventListener('click', revealCell))
 }
 window.addEventListener('DOMContentLoaded', init)

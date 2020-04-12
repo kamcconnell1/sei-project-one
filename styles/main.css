@@ -38,16 +38,21 @@ justify-content: center;
   width: 11.11%;
 }
 
-.grid div#bomb {
+.grid div.bomb {
   background-color: darkgoldenrod;
   background-repeat: no-repeat;
   background-size: contain;
   cursor: pointer;
 }
 
-.grid div.bomb-hint {
+/* .grid div.bomb-hint {
   background-color: rgb(167, 67, 130);
   background-repeat: no-repeat;
   background-size: contain;
   cursor: pointer;
+} */
+
+.grid div.cover {
+  background-color: lightgrey;
+  border: 1px solid darkgray;
 }
