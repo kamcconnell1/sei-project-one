@@ -44,9 +44,10 @@ function init() {
 
   function positionHints() {
     
-    cells.forEach((cell) => {
-      cell.textCont = cell.textContent.replace(/[1-9]/g,'')
-    })
+    // cells.forEach((cell) => {
+    //   let hintArr = cell.textContent.split('')
+    //   hintArr = []
+    // })
 
     // cells.map(cell => {
     //   cell.textContent = ''
@@ -71,20 +72,19 @@ function init() {
           return a + parseInt(b)
         },0)
         cell.textContent = hintNum > 0 ? hintNum : ''
-        
-        
       }
     })
   }
 
   // ? REMEMBER TO BRING THIS BACK
-  // function coverGrid() {
-  //   cells.map(cell => {
-  //     cell.classList.add('cover')
-  //   })
-  // }
+  function coverGrid() {
+    cells.map(cell => {
+      cell.classList.add('cover')
+    })
+  }
   // ? REMEMBER TO BRING THIS BACK
   function revealCell(event) {
+    
     // console.log(`just clicked ${event.target.textContent}`)
     if (event.target.classList.contains('bomb')) {
       cells.map(cell => {
@@ -94,8 +94,14 @@ function init() {
       event.target.classList.remove('cover')
     }
   }
+  function addFlag(event) {
+    event.preventDefault()
+    console.log(`just right clicked ${event}`)
+    event.target.classList.add('flag')
+  }
 
   function resetGame() {
+
     console.log('the reset button was clicked')
     // cells.map(cell => {
     //   cell.classList.remove('bomb')
@@ -107,15 +113,16 @@ function init() {
     // })
     positionBombs()
     positionHints()
-    // coverGrid()
+    coverGrid()
   }
 
   createCells()
   // * Event Listeners
   window.addEventListener('load', positionBombs)
   window.addEventListener('load', positionHints)
-  // window.addEventListener('load', coverGrid)
+  window.addEventListener('load', coverGrid)
   cells.forEach(cell => cell.addEventListener('click', revealCell))
+  cells.forEach(cell => cell.addEventListener('contextmenu', addFlag))
   resetBtn.addEventListener('click', resetGame)
 }
 window.addEventListener('DOMContentLoaded', init)

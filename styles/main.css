@@ -55,4 +55,9 @@ justify-content: center;
 .grid div.cover {
   background-color: lightgrey;
   border: 1px solid darkgray;
+  opacity: 1;
+}
+.grid div.flag {
+  background-color: darksalmon;
+  border: 1px solid sandybrown;
 }
