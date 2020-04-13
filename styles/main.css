@@ -52,15 +52,8 @@ body {
   font-size: 20px;
   font-weight: lighter;
   color: rgb(120, 120, 120);
-  /* color: transparent; */
+  color: transparent;
 }
-
-/* .grid div.bomb-hint {
-  background-color: rgb(167, 67, 130);
-  background-repeat: no-repeat;
-  background-size: contain;
-  cursor: pointer;
-} */
 
 .grid div.cover {
   background-color: lightgrey;
@@ -72,4 +65,9 @@ body {
 .grid div.flag {
   background-color: darksalmon;
   border: 1px solid sandybrown;
+}
+
+.game-sizes { 
+  position: absolute;
+  bottom: 0;
 }
