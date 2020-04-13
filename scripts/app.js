@@ -4,11 +4,13 @@ function init() {
   const grid = document.querySelector('.grid')
   const cells = []
   const resetBtn = document.querySelector('#reset')
+  const bombCounter = document.querySelector('#bomb-count')
 
   // * Grid Variables
   const width = 9
   const cellCount = width * width
   const bombCount = 10 //this will need to be updated to link to width when size increases 
+  const cell = 0
 
   // * Game Variables
   let bombPosition = []
@@ -21,7 +23,7 @@ function init() {
     for (let i = 0; i < cellCount; i++) {
       const cell = document.createElement('div')
       grid.appendChild(cell)
-      // cell.textContent = i
+      cell.textContent = i
       cells.push(cell)
     }
   }
@@ -41,32 +43,30 @@ function init() {
     }
     console.log(`Bomb in divs ${bombPositions}, (${bombPositions.length})`)
   }
-
+  
   function positionHints() {
-    
+    // cells.forEach(cell => cell.textContent.replace(/[0-9]/g, ' '))
     // cells.forEach((cell) => {
     //   let hintArr = cell.textContent.split('')
     //   hintArr = []
     // })
 
-    // cells.map(cell => {
-    //   cell.textContent = ''
-    // })
-    
     cells.forEach((cell, i) => {
-      // console.log('I am the cell', cell) 
+      // console.log('I am the cell', cell.textContent) 
+      const x = cell.textContent % width
+      // console.log('x is', x)
       if (!cell.hasAttributes('.bomb')) {
         // console.log(cell,'has bomb?', !cell.hasAttributes('.bomb'))
         const value = 
-        (`${(cells[i - 10] && cells[i - 10].hasAttributes('.bomb')) ? 1 : 0} +
+        (`${(x > 0 && cells[i - 10] && cells[i - 10].hasAttributes('.bomb')) ? 1 : 0} +
         ${(cells[i - 9] && cells[i - 9].hasAttributes('.bomb')) ? 1 : 0} +
-        ${(cells[i - 8] && cells[i - 8].hasAttributes('.bomb')) ? 1 : 0} +
-        ${(cells[i - 1] && cells[i - 1].hasAttributes('.bomb')) ? 1 : 0} +
-        ${(cells[i + 1] && cells[i + 1].hasAttributes('.bomb')) ? 1 : 0} +
-        ${(cells[i + 8] && cells[i + 8].hasAttributes('.bomb')) ? 1 : 0} +
+        ${(x < width - 1 && cells[i - 8] && cells[i - 8].hasAttributes('.bomb')) ? 1 : 0} +
+        ${(x > 0 && cells[i - 1] && cells[i - 1].hasAttributes('.bomb')) ? 1 : 0} +
+        ${(x < width - 1 && cells[i + 1] && cells[i + 1].hasAttributes('.bomb')) ? 1 : 0} +
+        ${(x > 0 && cells[i + 8] && cells[i + 8].hasAttributes('.bomb')) ? 1 : 0} +
         ${(cells[i + 9] && cells[i + 9].hasAttributes('.bomb')) ? 1 : 0} +
-        ${(cells[i + 10] && cells[i + 10].hasAttributes('.bomb')) ? 1 : 0}`).replace(/[^\d.-]/g, '').split('')
-        
+        ${(x < width - 1 && cells[i + 10] && cells[i + 10].hasAttributes('.bomb')) ? 1 : 0}`).replace(/[^\d.-]/g, '').split('')
+
         // console.log('value is', (value))
         const hintNum = value.reduce((a, b) => {
           return a + parseInt(b)
@@ -75,52 +75,53 @@ function init() {
       }
     })
   }
-
-  // ? REMEMBER TO BRING THIS BACK
-  function coverGrid() {
-    cells.map(cell => {
-      cell.classList.add('cover')
-    })
-  }
-  // ? REMEMBER TO BRING THIS BACK
+  
+  
+  // function coverGrid() {
+  //   cells.map(cell => {
+  //     cell.classList.add('cover')
+  //   })
+  //   bombCounter.textContent = bombCount
+  // }
+ 
   function revealCell(event) {
-    
     // console.log(`just clicked ${event.target.textContent}`)
     if (event.target.classList.contains('bomb')) {
-      cells.map(cell => {
-        cell.classList.remove('cover')
+      cells.filter(cell => {
+        if (cell.classList.contains('bomb')) cell.classList.remove('cover') && cell.classList.remove('flag')
       })
     } else {
       event.target.classList.remove('cover')
     }
   }
+
   function addFlag(event) {
     event.preventDefault()
     console.log(`just right clicked ${event}`)
     event.target.classList.add('flag')
+
+    bombCounter.textContent -= 1
   }
 
-  function resetGame() {
 
+
+  function resetGame() {
     console.log('the reset button was clicked')
     // cells.map(cell => {
     //   cell.classList.remove('bomb')
     // }) //!   WHY DIDN'T THIS WORK?
-    cells.forEach(cell => cell.classList.remove('bomb'))
-    // cells.forEach(cell => cell.textContent = '')
-    // cells.map(cell => {
-    //   cell.textContent = ''
-    // })
+    cells.forEach(cell => cell.classList.remove('bomb', 'flag'))
+    // cells.forEach(cell => cell.textContent.replace(/\d/g, ''))
     positionBombs()
     positionHints()
-    coverGrid()
+    // coverGrid()
   }
 
   createCells()
   // * Event Listeners
   window.addEventListener('load', positionBombs)
   window.addEventListener('load', positionHints)
-  window.addEventListener('load', coverGrid)
+  // window.addEventListener('load', coverGrid)
   cells.forEach(cell => cell.addEventListener('click', revealCell))
   cells.forEach(cell => cell.addEventListener('contextmenu', addFlag))
   resetBtn.addEventListener('click', resetGame)
