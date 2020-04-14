@@ -3,11 +3,13 @@ function init() {
   // * DOM Elements
   const grid = document.querySelector('.grid')
   const cells = []
-  const resetBtn = document.querySelector('#reset')
+  const resetBtn = document.querySelectorAll('#reset')
   const bombCounter = document.querySelector('#bomb-count')
   const clickCounter = document.querySelector('#click-count')
   const minutesLabel = document.querySelector('#minutes')
   const secondsLabel = document.querySelector('#seconds')
+  const overlay = document.querySelector('#overlay')
+  
   
   // * Grid Variables
   const width = 9
@@ -17,6 +19,7 @@ function init() {
   // * Game Variables
   let bombPosition = []
   let bombPositions = []
+  const flagPositions = []
   let hintNum = 0
   let clickCount = 0
   let totalSeconds = 0
@@ -162,12 +165,7 @@ function init() {
   }
 
   function winGame() {
-    if
-    cells.every(cell => {
-      return !cell.classList.contains('cover' || 'flag') && 
-      
-    })
-    console.log('game has been won')
+    if (bombPositions.sort().join(',') === flagPositions.sort().join(',')) gameStats()
   }
   
   // function findAdjCells(event) {
@@ -204,6 +202,9 @@ function init() {
   function addFlag(event) {
     event.preventDefault()
     event.target.classList.add('flag')
+    flagPositions.push(cells.indexOf(event.target))
+    console.log(flagPositions)
+    
 
     clickCount += 1
     bombCounter.textContent -= 1
@@ -212,18 +213,25 @@ function init() {
 
 
   // Show statistics of the user's performance after the game is finished
-  // function statistics(){
-  //   document.body.style.background = 'white'
-  //   document.body.innerHTML = `
-  //   <div class="container center">
-  //       ${successAnimation}
-  //       <h1>Congratulations! You Won!</h1> 
-  //       <p>With ${clickCounter} Moves and ${document.querySelectorAll('.fa.fa-star').length} stars.</p>
-  //       <p>Finished in ${minutesLabel.textContent} : ${secondsLabel.textContent}</p>
-  //       <p>Wooooooooo!</p>
-  //       <button class="btn reset" type="submit">Play again</button>
-  //   </div>`
-  // }
+  function gameStats(){
+    overlay.style.display = 'block'
+    
+  }
+  
+  function overlayOff() {
+    overlay.style.display = 'none'
+  }
+
+  // document.body.style.background = 'white'
+  // document.body.innerHTML = 
+  // `<div class="container center">
+  //     <h1>Congratulations! You Won!</h1> 
+  //     <p>With ${clickCounter} Moves</p>
+  //     <p>Finished in ${minutesLabel.textContent} : ${secondsLabel.textContent}</p>
+  //     <p>Wooooooooo!</p>
+  //     <button class="btn reset" type="submit">Play again</button>
+  // </div>`
+  
 
 
 
@@ -253,6 +261,7 @@ function init() {
   cells.forEach(cell => cell.addEventListener('click', revealCell))
   cells.forEach(cell => cell.addEventListener('contextmenu', addFlag))
   // cells.forEach(cell => cell.addEventListener('click', findAdjCells))
-  resetBtn.addEventListener('click', resetGame)
+  resetBtn.forEach(btn => btn.addEventListener('click', resetGame))
+  overlay.addEventListener('click', overlayOff)
 }
 window.addEventListener('DOMContentLoaded', init)
