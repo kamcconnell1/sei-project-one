@@ -2,19 +2,23 @@ function init() {
 
   // * DOM Elements
   const grid = document.querySelector('.grid')
-  const cells = []
   const resetBtn = document.querySelectorAll('#reset')
   const bombCounter = document.querySelector('#bomb-count')
   const clickCounter = document.querySelector('#click-count')
   const minutesLabel = document.querySelector('#minutes')
   const secondsLabel = document.querySelector('#seconds')
   const overlay = document.querySelector('#overlay')
+  const overlayTime = document.querySelector('#time')
+  const overlayClicks = document.querySelector('#clicks')
   
   
   // * Grid Variables
+  const cells = []
   const width = 9
   const cellCount = width * width
-  const bombCount = 2 //this will need to be updated to link to width when size increases 
+  // eslint-disable-next-line prefer-const
+  
+  const bombCount = 7 //this will need to be updated to link to width when size increases 
   
   // * Game Variables
   let bombPosition = []
@@ -65,10 +69,11 @@ function init() {
   // -------------------------- Position the hints ------------------------------------------
   function positionHints() {
     cells.forEach((cell, i) => {
-      // console.log('I am the cell', cell.textContent) 
+      // console.log('I am the cell', i) 
       const x = i % width
       // console.log('x is', x)
       if (!cell.hasAttributes('.bomb')) {
+        // let mineCount = 0
         // console.log(cell,'has bomb?', !cell.hasAttributes('.bomb'))
         const value =
           (`${(x > 0 && cells[i - 10] && cells[i - 10].hasAttributes('.bomb')) ? 1 : 0} +
@@ -89,6 +94,9 @@ function init() {
       }
     })
   }
+
+  
+  
 
   // --------------------------- Cover the Grid ---------------------------------------------
   function coverGrid() {
@@ -126,82 +134,78 @@ function init() {
       return valString
     }
   }
-
-
+  
+  
   // -------------------------- Reveal Cell on Click ----------------------------------------
   function revealCell(event) {
     winGame()
     clickCount += 1
     clickCounter.textContent = clickCount
+    const i = (cells.indexOf(event.target)) 
     // console.log(`just clicked ${event.target.textContent}`)
+    
+    if (event.target.textContent > 0) return event.target.classList.remove('cover') 
+
     if (!event.target.textContent > 0) {
-      const i = (cells.indexOf(event.target)) 
-      const x = i % width
+      console.log('target had no value')
       cells[i].classList.remove('cover')
-      if (x > 0 && cells[i - 10] && !cells[i - 10].textContent > 0) cells[i - 10].classList.remove('cover')
-      if (cells[i - 9] && !cells[i - 9].textContent > 0) cells[i - 9].classList.remove('cover')
-      if (x < width - 1 && cells[i - 8] && !cells[i - 8].textContent > 0) cells[i - 8].classList.remove('cover')
-      if (x > 0 && cells[i - 1] && !cells[i - 1].textContent > 0) cells[i - 1].classList.remove('cover')
-      if (x < width - 1 && cells[i + 1] && !cells[i + 1].textContent > 0) cells[i + 1].classList.remove('cover')
-      if (x > 0 && cells[i + 8] && !cells[i + 8].textContent > 0) cells[i + 8].classList.remove('cover')
-      if (cells[i + 9] && !cells[i + 9].textContent > 0) cells[i + 9].classList.remove('cover')
-      if (x < width - 1 && cells[i + 10] && !cells[i + 10].textContent > 0) cells[i + 10].classList.remove('cover')
- 
+      findAdjCells()
+    }
+  }
+  
+  function findAdjCells() {
+    const adjCells = []
+    const i = (cells.indexOf(event.target)) 
+    const x = i % width
+    if (x > 0 && cells[i - 10]) adjCells.push(i - 10)
+    if (cells[i - 9]) adjCells.push(i - 9)
+    if (x < width - 1 && cells[i - 8]) adjCells.push(i - 8)
+    if (x > 0 && cells[i - 1]) adjCells.push(i - 1)
+    if (x < width - 1 && cells[i + 1]) adjCells.push(i + 1)
+    if (x > 0 && cells[i + 8]) adjCells.push(i + 8)
+    if (cells[i + 9]) adjCells.push(i + 9)
+    if (x < width - 1 && cells[i + 10]) adjCells.push(i + 10)
+    
+    console.log(adjCells)
+   
+    if (!event.target.textContent > 0) {
+      adjCells.forEach(i => {
+        cells[i].classList.remove('cover')
+      })
+      console.log(cells.indexOf(event.target))
       
-    } else {
-      event.target.classList.remove('cover')
+      if (!cells[i + 1].textContent > 0) {
+        const i = (cells.indexOf(event.target) + 1)
+        console.log(i)
+        adjCells.forEach(i => {
+          cells[i].classList.remove('cover')
+        })
+      }
     }
   }
 
-  function gameOver(event) {
+  function gameOver() {
     if (event.target.classList.contains('bomb')) {
+      // clearInterval(setTime) //!WHY DOESNT THIS WORK
       cells.filter(cell => {
         if (cell.classList.contains('bomb')) cell.classList.remove('cover', 'flag')
       })
       cells.forEach(cell => cell.removeEventListener('click', revealCell))
       cells.forEach(cell => cell.removeEventListener('contextmenu', addFlag))
-      clearInterval(setTime)
     }
   }
-
+  
+  
   function winGame() {
-    if (bombPositions.sort().join(',') === flagPositions.sort().join(',')) gameStats()
+    if (bombPositions.sort().join(',') === flagPositions.sort().join(',')) setTimeout(gameStats(), 1000)
   }
   
-  // function findAdjCells(event) {
-  //   const adjCells = []
-  //   const i = (cells.indexOf(event.target)) 
-  //   const x = i % width
-  //   cells[i].classList.remove('cover')
-  //   if (x > 0 && cells[i - 10] && !cells[i - 10].textContent > 0) adjCells.push(i - 10)
-  //   if (cells[i - 9] && !cells[i - 9].textContent > 0) adjCells.push(i - 9)
-  //   if (x < width - 1 && cells[i - 8] && !cells[i - 8].textContent > 0) adjCells.push(i - 8)
-  //   if (x > 0 && cells[i - 1] && !cells[i - 1].textContent > 0) adjCells.push(i - 1)
-  //   if (x < width - 1 && cells[i + 1] && !cells[i + 1].textContent > 0) adjCells.push(i + 1)
-  //   if (x > 0 && cells[i + 8] && !cells[i + 8].textContent > 0) adjCells.push(i + 8)
-  //   if (cells[i + 9] && !cells[i + 9].textContent > 0) adjCells.push(i + 9)
-  //   if (x < width - 1 && cells[i + 10] && !cells[i + 10].textContent > 0) adjCells.push(i + 10)
-  //   console.log(adjCells)
-  // console.log(cells[adjCells])
-    
-   
-  
-
-  //   cells = cells.filter(item => {
-  //     return adjCells.includes(item)
-  //   })
-  //   console.log(cells)
-    
-    
-
-  // adjCells.forEach((cells, i) => cells[i].classList.remove('cover)'))
-
-  // }
-
+      
   // -------------------------- Add Flag on Right Click -------------------------------------
   function addFlag(event) {
+    winGame()
     event.preventDefault()
-    event.target.classList.add('flag')
+    event.target.classList.toggle('flag')
     flagPositions.push(cells.indexOf(event.target))
     console.log(flagPositions)
     
@@ -215,26 +219,13 @@ function init() {
   // Show statistics of the user's performance after the game is finished
   function gameStats(){
     overlay.style.display = 'block'
-    
+    overlayTime.textContent = ` ${minutesLabel.textContent}:${secondsLabel.textContent}`
+    overlayClicks.textContent = ` ${clickCounter.textContent}`
   }
   
   function overlayOff() {
     overlay.style.display = 'none'
   }
-
-  // document.body.style.background = 'white'
-  // document.body.innerHTML = 
-  // `<div class="container center">
-  //     <h1>Congratulations! You Won!</h1> 
-  //     <p>With ${clickCounter} Moves</p>
-  //     <p>Finished in ${minutesLabel.textContent} : ${secondsLabel.textContent}</p>
-  //     <p>Wooooooooo!</p>
-  //     <button class="btn reset" type="submit">Play again</button>
-  // </div>`
-  
-
-
-
 
 
 
@@ -260,7 +251,7 @@ function init() {
   cells.forEach(cell => cell.addEventListener('click', gameOver))
   cells.forEach(cell => cell.addEventListener('click', revealCell))
   cells.forEach(cell => cell.addEventListener('contextmenu', addFlag))
-  // cells.forEach(cell => cell.addEventListener('click', findAdjCells))
+  cells.forEach(cell => cell.addEventListener('click', findAdjCells))
   resetBtn.forEach(btn => btn.addEventListener('click', resetGame))
   overlay.addEventListener('click', overlayOff)
 }
