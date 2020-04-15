@@ -6,19 +6,21 @@
   <title>MINESWEEPER</title>
   <link rel="stylesheet" href="styles/main.css">
   <link href="https://fonts.googleapis.com/css2?family=Montserrat&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inconsolata:wght@700&display=swap" rel="stylesheet">
   <script src='scripts/app.js'></script>
 </head>
 
 <body>
   <div class="game-board">
+    <h1 class="game-title">MINESWEEPER</h1>
   <div class="controls-wrapper">
-
     <div class="bomb-counter">
     <img src="assets/bomb.png" alt="bomb" width = 30px>
     <div id="bomb-count"></div>
     </div>
 
-    <button id="reset"><img src="assets/happy_face.png" alt="happy face"></button>
+    
+    <button id="reset"><img src="assets/happy_face.png" alt="happy face" width='80px'></button>
     
     <div class='game-counter'>
       <img src="assets/timer.png" alt="timer">
@@ -34,22 +36,22 @@
     <div class="grid"></div>
   </div>
   <div class="game-options">
-    <select id="select">
+    <!-- <select id="level">
       <option value="beginner">Beginner</option>
       <option value="intermediate">Intermediate</option>
       <option value="advanced">Advanced</option>
-    </select>
-    <select id="colour-scheme">
+    </select> -->
+    <!-- <select id="colour-scheme">
       <option value="traditional">Traditional</option>
       <option value="sea">Sharks & Sea</option>
-    </select>
+    </select> -->
   </div>
 </div>
   <div id="overlay">
     <div id="overlay-box">
       <div id="overlay-text">
     <img src="assets/happy_face.png" alt="happy face" width = 90px>
-    <h1>YOU WIN</h1>
+    <h2 class="overlay-title">YOU WIN</h2>
     <p>Time:<span id="time"></span></p>
     <p>Clicks:<span id="clicks"></span></p>
     <button id="reset">New Game</button>

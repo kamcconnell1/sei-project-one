@@ -10,7 +10,7 @@ function init() {
   const overlay = document.querySelector('#overlay')
   const overlayTime = document.querySelector('#time')
   const overlayClicks = document.querySelector('#clicks')
-  
+  // const chooseLevel = document.querySelector('#level')
   
   // * Grid Variables
   const cells = []
@@ -18,7 +18,7 @@ function init() {
   const cellCount = width * width
   // eslint-disable-next-line prefer-const
   
-  const bombCount = 7 //this will need to be updated to link to width when size increases 
+  const bombCount = 10 //this will need to be updated to link to width when size increases 
   
   // * Game Variables
   let bombPosition = []
@@ -28,8 +28,6 @@ function init() {
   let clickCount = 0
   let totalSeconds = 0
   
-
-
 
 
 
@@ -106,6 +104,38 @@ function init() {
   }
 
 
+  // *-------------------------- Select Game Options------------------------------------------
+
+  // function changeLevel() {
+  //   console.log(chooseLevel.value)
+  //   if (chooseLevel.value === 'intermediate') {
+  //     width = 16
+  //     bombCount = 40
+  //     cells = []
+  //     createCells()
+  //     console.log(cells)
+  //     positionBombs()
+  //     positionHints()
+  //   }
+  // }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -153,30 +183,37 @@ function init() {
     }
   }
   
+  const adjCells = []
   function findAdjCells() {
-    const adjCells = []
+    
     const i = (cells.indexOf(event.target)) 
     const x = i % width
-    if (x > 0 && cells[i - 10]) adjCells.push(i - 10)
-    if (cells[i - 9]) adjCells.push(i - 9)
-    if (x < width - 1 && cells[i - 8]) adjCells.push(i - 8)
-    if (x > 0 && cells[i - 1]) adjCells.push(i - 1)
-    if (x < width - 1 && cells[i + 1]) adjCells.push(i + 1)
-    if (x > 0 && cells[i + 8]) adjCells.push(i + 8)
-    if (cells[i + 9]) adjCells.push(i + 9)
-    if (x < width - 1 && cells[i + 10]) adjCells.push(i + 10)
+    if (x > 0 && cells[i - 10] && !cells[i - 10].classList.contains('bomb')) adjCells.push(i - 10)
+    if (cells[i - 9] && !cells[i - 9].classList.contains('bomb')) adjCells.push(i - 9)
+    if (x < width - 1 && cells[i - 8] && !cells[i - 8].classList.contains('bomb')) adjCells.push(i - 8)
+    if (x > 0 && cells[i - 1] && !cells[i - 1].classList.contains('bomb')) adjCells.push(i - 1)
+    if (x < width - 1 && cells[i + 1] && !cells[i + 1].classList.contains('bomb')) adjCells.push(i + 1)
+    if (x > 0 && cells[i + 8] && !cells[i + 8].classList.contains('bomb')) adjCells.push(i + 8)
+    if (cells[i + 9] && !cells[i + 9].classList.contains('bomb')) adjCells.push(i + 9)
+    if (x < width - 1 && cells[i + 10] && !cells[i + 10].classList.contains('bomb')) adjCells.push(i + 10)
     
     console.log(adjCells)
-   
+  }
+
+  function openCells(event) {
     if (!event.target.textContent > 0) {
+      // console.log(adjCells)
       adjCells.forEach(i => {
         cells[i].classList.remove('cover')
       })
+      
       console.log(cells.indexOf(event.target))
       
-      if (!cells[i + 1].textContent > 0) {
-        const i = (cells.indexOf(event.target) + 1)
-        console.log(i)
+      
+      const i = (cells.indexOf(event.target) + 1)
+      if (cells[i + 1] && !cells[i + 1].textContent > 0) {
+        // console.log(i)
+        findAdjCells()
         adjCells.forEach(i => {
           cells[i].classList.remove('cover')
         })
@@ -248,10 +285,14 @@ function init() {
   window.addEventListener('load', positionBombs)
   window.addEventListener('load', positionHints)
   window.addEventListener('load', coverGrid)
+
+  // chooseLevel.addEventListener('change',positionBombs)
+  // chooseLevel.addEventListener('change', changeLevel)
   cells.forEach(cell => cell.addEventListener('click', gameOver))
   cells.forEach(cell => cell.addEventListener('click', revealCell))
   cells.forEach(cell => cell.addEventListener('contextmenu', addFlag))
   cells.forEach(cell => cell.addEventListener('click', findAdjCells))
+  cells.forEach(cell => cell.addEventListener('click', openCells))
   resetBtn.forEach(btn => btn.addEventListener('click', resetGame))
   overlay.addEventListener('click', overlayOff)
 }
