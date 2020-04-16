@@ -70,6 +70,8 @@ h1 {
   padding: 5px;
   justify-content: space-evenly;
   align-items: center;
+  height: 70px;
+  font-size: 40px;
 }
 
 
@@ -78,7 +80,7 @@ h1 {
   width: 150px;
   background-color: white;
   border-radius: 10px;
-  padding: 5px;
+  height: 70px;
   align-items: center;
   justify-content: space-evenly;
   position: absolute;
@@ -101,8 +103,18 @@ h1 {
   height: 100px;
   background-color: transparent;
   border: none;
+  outline: none;
 }
-
+#reset:active {
+  transform: translateX(2px) translateY(3px);
+}
+/* 
+#rest .shocked-face {
+  display: none;
+}
+#reset:hover .shocked-face {
+  display: inline;
+} */
 
 .grid {
   align-items: center;
@@ -147,34 +159,38 @@ select {
 /* -----------------------Extra Styling---------------- */
 
 .grid div.bomb {
+  /* background-image: url(../assets/bomb2.gif) hidden; */
+  /* background-image: url(../assets/game_bomb.png); */
   background-color: red;
   background-repeat: no-repeat;
   background-size: contain;
+  background-position: center;
   cursor: pointer;
   font-size: 20px;
   font-weight: lighter;
   color: rgb(120, 120, 120);
   color: transparent;
-  
 }
 
 
 .grid div.hint {
   background-color: indianred;
+  font-size: 20px;
+  color:black;
 }
 
 .grid div.cover {
-  /* background-color: #f9f9f9; */
-  /* border: 1px solid #8DA7BE; */
-  /* background-color: rgba(0,0,0,0.2); */
-  color: transparent;
-  /* box-shadow: inset 5px 5px 10px #FFF, inset -3px -3px 5px #777; */
+  border: 1px solid black;
+  background-color: rgba(0,0,0,0.2);
+  color: transparent; 
+  box-shadow: inset 5px 5px 10px #FFF, inset -3px -3px 5px #777; 
+  /* z-index: 1; */
 }
 
 .grid div.flag {
   background-image: url(../assets/flag.png);
  background-repeat: no-repeat;
- background-position: center;
+ background-size: contain;
 }
 
 .game-sizes { 
@@ -195,20 +211,46 @@ select {
   background-color: rgba(0,0,0,0.5); /* Black background with opacity */
   z-index: 2; /* Specify a stack order in case you're using a different order for other elements */
   cursor: pointer; /* Add a pointer on hover */
+  /* display: flex; SETTING THIS RUINS THE OVERLAY */
 }
 
 #overlay-box {
-  display: flex;
-  margin: auto;
+  margin: 5% auto;
   width: 600px; 
   height: 80%; 
   background-color: #ffffff; 
   cursor: pointer; 
-  border-radius: 70px;
+  border-radius: 75px;
+  text-align: center;
 }
 #overlay-text {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
+  /* /* display: flex; SETTING THIS RUINS THE OVERLAY */
+ padding-top: 30px;
+
+}
+
+#overlay h2 {
+  color: red;
+  font-family: 'Russo One', sans-serif;
+  font-size: 50px;
+}
+
+#overlay p {
+  font-size: 30px;
+}
+
+#new-game {
+  width: 300px;
+  height: 75px;
+  border-radius: 100px;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 20px;
+  color: black;
+  border: 2px solid #4F6272;
+  transition-duration: 0.3s;
+}
+
+#new-game:hover {
+  background-color: #4F6272; 
+  color: white;
 }

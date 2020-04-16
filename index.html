@@ -7,6 +7,7 @@
   <link rel="stylesheet" href="styles/main.css">
   <link href="https://fonts.googleapis.com/css2?family=Montserrat&display=swap" rel="stylesheet">
   <link href="https://fonts.googleapis.com/css2?family=Inconsolata:wght@700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Russo+One&display=swap" rel="stylesheet">
   <script src='scripts/app.js'></script>
 </head>
 
@@ -15,15 +16,17 @@
     <h1 class="game-title">MINESWEEPER</h1>
   <div class="controls-wrapper">
     <div class="bomb-counter">
-    <img src="assets/bomb.png" alt="bomb" width = 30px>
+    <img src="assets/bomb.png" alt="bomb" height = '40px'>
     <div id="bomb-count"></div>
     </div>
 
     
-    <button id="reset"><img src="assets/happy_face.png" alt="happy face" width='80px'></button>
+    <button id ="reset"><img src="assets/happy_face.png" id="smiley-face" alt="happy face" width='80px'>
+      <!-- <img src="assets/shocked_face.png" id="shocked-face" alt="shocked face" width='80px'> -->
+    </button>
     
     <div class='game-counter'>
-      <img src="assets/timer.png" alt="timer">
+      <img src="assets/timer.png" alt="timer" height="40px">
       <div class="counters-wrapper">
     <div id="click-count">0</div>
     <div class="timer"><label id="minutes">00</label>:<label id="seconds">00</label></div>
@@ -54,7 +57,7 @@
     <h2 class="overlay-title">YOU WIN</h2>
     <p>Time:<span id="time"></span></p>
     <p>Clicks:<span id="clicks"></span></p>
-    <button id="reset">New Game</button>
+    <button id="new-game">New Game</button>
   </div>
   </div>
   </div>

@@ -2,7 +2,8 @@ function init() {
 
   // * DOM Elements
   const grid = document.querySelector('.grid')
-  const resetBtn = document.querySelectorAll('#reset')
+  const resetBtn = document.querySelector('#reset')
+  const newGameBtn = document.querySelector('#new-game')
   const bombCounter = document.querySelector('#bomb-count')
   const clickCounter = document.querySelector('#click-count')
   const minutesLabel = document.querySelector('#minutes')
@@ -10,6 +11,7 @@ function init() {
   const overlay = document.querySelector('#overlay')
   const overlayTime = document.querySelector('#time')
   const overlayClicks = document.querySelector('#clicks')
+  const smileyFace = document.querySelector('#smiley-face')
   // const chooseLevel = document.querySelector('#level')
   
   // * Grid Variables
@@ -18,17 +20,16 @@ function init() {
   const cellCount = width * width
   // eslint-disable-next-line prefer-const
   
-  const bombCount = 10 //this will need to be updated to link to width when size increases 
-  
   // * Game Variables
+  // eslint-disable-next-line prefer-const
+  let bombCount = 10 //this will need to be updated to link to width when size increases 
   let bombPosition = []
   let bombPositions = []
   const flagPositions = []
-  let hintNum = 0
   let clickCount = 0
   let totalSeconds = 0
   
-
+  let t
 
 
 
@@ -61,40 +62,47 @@ function init() {
     }
     bombCounter.textContent = bombCount
     clickCounter.textContent = clickCount
-    console.log(`Bomb in divs ${bombPositions}, (${bombPositions.length})`)
+    console.log(`Bomb in divs ${bombPositions}, (${bombPositions.length})`) 
   }
-
+  
   // -------------------------- Position the hints ------------------------------------------
   function positionHints() {
     cells.forEach((cell, i) => {
+     
+      const x = i % width   //this stops the cells going over the line below
+      //these help to look for the cells around the cell am looking at
+      const northWestCell = cells[i - width - 1]
+      const northCell = cells[i - 9]
+      const northEastCell = cells[i - width + 1]
+      const westCell = cells[i - 1]
+      const eastCell = cells[i + 1]
+      const southWestCell = cells[i + width - 1]
+      const southCell = cells[i + width]
+      const southEastCell = cells[i + width + 1]
+      
+      // these check that the cell to the right / left actually exist 
+      const westWall = x > 0
+      const eastWall = x < width - 1
+  
       // console.log('I am the cell', i) 
-      const x = i % width
-      // console.log('x is', x)
+      let mineCount = 0
       if (!cell.hasAttributes('.bomb')) {
-        // let mineCount = 0
         // console.log(cell,'has bomb?', !cell.hasAttributes('.bomb'))
-        const value =
-          (`${(x > 0 && cells[i - 10] && cells[i - 10].hasAttributes('.bomb')) ? 1 : 0} +
-        ${(cells[i - 9] && cells[i - 9].hasAttributes('.bomb')) ? 1 : 0} +
-        ${(x < width - 1 && cells[i - 8] && cells[i - 8].hasAttributes('.bomb')) ? 1 : 0} +
-        ${(x > 0 && cells[i - 1] && cells[i - 1].hasAttributes('.bomb')) ? 1 : 0} +
-        ${(x < width - 1 && cells[i + 1] && cells[i + 1].hasAttributes('.bomb')) ? 1 : 0} +
-        ${(x > 0 && cells[i + 8] && cells[i + 8].hasAttributes('.bomb')) ? 1 : 0} +
-        ${(cells[i + 9] && cells[i + 9].hasAttributes('.bomb')) ? 1 : 0} +
-        ${(x < width - 1 && cells[i + 10] && cells[i + 10].hasAttributes('.bomb')) ? 1 : 0}`).replace(/[^\d.-]/g, '').split('')
-
-        // console.log('value is', (value))
-        hintNum = value.reduce((a, b) => {
-          return a + parseInt(b)
-        }, 0)
-
-        cell.textContent = hintNum > 0 ? hintNum : ''
+        if  (westWall && northWestCell && northWestCell.hasAttributes('.bomb')) ++mineCount
+        if (northCell && northCell.hasAttributes('.bomb')) mineCount++
+        if (eastWall && northEastCell && northEastCell.hasAttributes('.bomb')) mineCount++
+        if (westWall && westCell && westCell.hasAttributes('.bomb')) mineCount++
+        if (eastWall && eastCell && eastCell.hasAttributes('.bomb')) mineCount++
+        if (westWall && southWestCell && southWestCell.hasAttributes('.bomb')) mineCount++
+        if (southCell && southCell.hasAttributes('.bomb')) mineCount++
+        if (eastWall && southEastCell && southEastCell.hasAttributes('.bomb')) mineCount++
+        cell.textContent = mineCount
+        // cell.textContent = hintNum > 0 ? hintNum : ''
       }
     })
   }
+  
 
-  
-  
 
   // --------------------------- Cover the Grid ---------------------------------------------
   function coverGrid() {
@@ -121,34 +129,14 @@ function init() {
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
   // * -------------------- Functions for Playing the Game ----------------------------------
 
   // -------------------------- Timer ----------------------------------------
   
   // Help on how to add the timer taken from here 
   // https://stackoverflow.com/questions/5517597/plain-count-up-timer-in-javascript
-  setInterval(setTime, 1000)
+  // eslint-disable-next-line prefer-const
+  t = setInterval(setTime, 1000)
 
   function setTime() {
     ++totalSeconds
@@ -165,92 +153,155 @@ function init() {
     }
   }
   
-  
-  // -------------------------- Reveal Cell on Click ----------------------------------------
+  // ? --------------------------------Click Events----------------------------------------
   function revealCell(event) {
-    winGame()
+    // smileyFace = ('src','/assets/shocked_face.png') //!COME BACK TO THIS WANT THE FACE TO CHANGE ON CLICK
+    const cell = event.target
+    const i = cells.indexOf(cell)
     clickCount += 1
     clickCounter.textContent = clickCount
-    const i = (cells.indexOf(event.target)) 
-    // console.log(`just clicked ${event.target.textContent}`)
     
-    if (event.target.textContent > 0) return event.target.classList.remove('cover') 
-
-    if (!event.target.textContent > 0) {
-      console.log('target had no value')
-      cells[i].classList.remove('cover')
+    // this is for if click on a cell with a number in  
+    if (cell.textContent > '0')  {
+      cell.classList.remove('cover') 
+      console.log('removing one cell')
+      // winGame()
+    }
+    if (cell.textContent === '0' ) {
       findAdjCells()
     }
+    // if (cells[i + 1].textContent === '0') {
+    //   findAdjCells()
+    // }
+
   }
   
-  const adjCells = []
   function findAdjCells() {
-    
-    const i = (cells.indexOf(event.target)) 
+    const adjCells = []
+
+
+    const i = cells.indexOf(event.target)
     const x = i % width
-    if (x > 0 && cells[i - 10] && !cells[i - 10].classList.contains('bomb')) adjCells.push(i - 10)
-    if (cells[i - 9] && !cells[i - 9].classList.contains('bomb')) adjCells.push(i - 9)
-    if (x < width - 1 && cells[i - 8] && !cells[i - 8].classList.contains('bomb')) adjCells.push(i - 8)
-    if (x > 0 && cells[i - 1] && !cells[i - 1].classList.contains('bomb')) adjCells.push(i - 1)
-    if (x < width - 1 && cells[i + 1] && !cells[i + 1].classList.contains('bomb')) adjCells.push(i + 1)
-    if (x > 0 && cells[i + 8] && !cells[i + 8].classList.contains('bomb')) adjCells.push(i + 8)
-    if (cells[i + 9] && !cells[i + 9].classList.contains('bomb')) adjCells.push(i + 9)
-    if (x < width - 1 && cells[i + 10] && !cells[i + 10].classList.contains('bomb')) adjCells.push(i + 10)
+    const northWestCell = cells[i - width - 1]
+    const northCell = cells[i - 9]
+    const northEastCell = cells[i - width + 1]
+    const westCell = cells[i - 1]
+    const eastCell = cells[i + 1]
+    const southWestCell = cells[i + width - 1]
+    const southCell = cells[i + width]
+    const southEastCell = cells[i + width + 1]
+      
+    const westWall = x > 0
+    const eastWall = x < width - 1
+    // ! This code is repeated from position hints - think how to refactor
     
+    
+    if  (westWall && northWestCell && !northWestCell.classList.contains('bomb')) adjCells.push(i - width - 1)
+    if (northCell && !northCell.classList.contains('bomb'))  adjCells.push(i - width)
+    if (eastWall && northEastCell && !northEastCell.classList.contains('bomb')) adjCells.push(i - width + 1)
+    if (westWall && westCell && !westCell.classList.contains('bomb')) adjCells.push(i - 1)
+    if (eastWall && eastCell && !eastCell.classList.contains('bomb')) adjCells.push(i + 1)
+    if (westWall && southWestCell && !southWestCell.classList.contains('bomb')) adjCells.push(i + 8)
+    if (southCell && !southCell.classList.contains('bomb')) adjCells.push(i + 9)
+    if (eastWall && southEastCell && !southEastCell.classList.contains('bomb')) adjCells.push(i + 10)
+    
+    cells[i].classList.remove('cover') 
+    cells[i].textContent = ''
+
+    adjCells.forEach(i => {
+      cells[i].classList.remove('cover')
+      if (cells[i].textContent === '0') cells[i].textContent = ''
+    })
     console.log(adjCells)
   }
+   
+  
 
-  function openCells(event) {
-    if (!event.target.textContent > 0) {
-      // console.log(adjCells)
-      adjCells.forEach(i => {
-        cells[i].classList.remove('cover')
-      })
-      
-      console.log(cells.indexOf(event.target))
-      
-      
-      const i = (cells.indexOf(event.target) + 1)
-      if (cells[i + 1] && !cells[i + 1].textContent > 0) {
-        // console.log(i)
-        findAdjCells()
-        adjCells.forEach(i => {
-          cells[i].classList.remove('cover')
-        })
-      }
-    }
+  // -------------------------- Add Flag on Right Click -------------------------------------
+  function addFlag(event) {
+    event.preventDefault()
+    const cell = event.target
+    flagPositions.push(cells.indexOf(event.target))
+    
+    console.log(flagPositions)
+    cell.classList.toggle('flag')
+    bombCounter.textContent -= 1
+    // if (!cell.hasAttributes('.flag')) {
+    //   cell.classList.remove(flag)
+    //   bombCounter.textContent += 1
+    // } else {
+    //   cell.classList.add('flag')
+    //   bombCounter.textContent -= 1
+    // }
+ 
+
+    clickCount += 1
+    clickCounter.textContent = clickCount
   }
+ 
 
+
+
+
+  // ! NEED TO CHANGE NOTHING IS HAPPENING 
+  // function handleMouseEnter(event) {
+  //   console.log('mouse has entered the box')
+  //   const img = document.createElement('img')
+  //   img.setAttribute('src', 'assets/shocked_face.png')
+  //   document.getElementById('smiley-face').appendChild(img)
+  // }
+  // function handleMouseLeave() {
+  //   console.log('mouse has left the box')
+  //   // nameSpan.textContent = ''
+  // }
+  
+  
+  
+  
   function gameOver() {
     if (event.target.classList.contains('bomb')) {
-      // clearInterval(setTime) //!WHY DOESNT THIS WORK
+      clearInterval(t)
+      // event.target.style.visibility = 'visible'
+
+
+      // const bombGif = document.createElement('img')
+      // bombGif.setAttribute('src', 'assets/bomb2.gif')
+      // bombGif.setAttribute('width', '500')
+      // background-size: contain; //! CAN I DO THIS ON JAVSCRIPT? HOW CAN I MOVE THE GIF TO THE LEFT??
+      // document.querySelector('.grid').appendChild(bombGif)
+      // event.target.appendChild(bombGif)
+
+
+
+      // setTimeout((event.target.removeChild(bombGif)), 2000 )
+      
+      // cells.forEach(delayLoop(display, 1000));
+     
+      // const delayLoop = (fn, delay) => {
+      //   return (x, i) => {
+      //     setTimeout(() => {
+      //       fn(x)
+      //     }, i * 1000)
+      //   }
+      // }
+
       cells.filter(cell => {
         if (cell.classList.contains('bomb')) cell.classList.remove('cover', 'flag')
       })
       cells.forEach(cell => cell.removeEventListener('click', revealCell))
       cells.forEach(cell => cell.removeEventListener('contextmenu', addFlag))
+      cells.forEach(cell => cell.removeEventListener('click', findAdjCells))
     }
   }
   
   
   function winGame() {
-    if (bombPositions.sort().join(',') === flagPositions.sort().join(',')) setTimeout(gameStats(), 1000)
+    if (bombPositions.sort().join(',') === flagPositions.sort().join(',')) {
+      console.log('won')
+      setTimeout(gameStats, 1000)
+    }
   }
   
-      
-  // -------------------------- Add Flag on Right Click -------------------------------------
-  function addFlag(event) {
-    winGame()
-    event.preventDefault()
-    event.target.classList.toggle('flag')
-    flagPositions.push(cells.indexOf(event.target))
-    console.log(flagPositions)
-    
-
-    clickCount += 1
-    bombCounter.textContent -= 1
-    clickCounter.textContent = clickCount
-  }
 
 
   // Show statistics of the user's performance after the game is finished
@@ -275,7 +326,9 @@ function init() {
     // positionHints()
     // coverGrid()
     location.reload()
+    // overlay.style.display = 'none'
   }
+
 
 
 
@@ -288,12 +341,19 @@ function init() {
 
   // chooseLevel.addEventListener('change',positionBombs)
   // chooseLevel.addEventListener('change', changeLevel)
+  // smileyFace.addEventListener('mouseenter', handleMouseEnter)
+  // smileyFace.addEventListener('mouseleave', handleMouseLeave)
+
   cells.forEach(cell => cell.addEventListener('click', gameOver))
   cells.forEach(cell => cell.addEventListener('click', revealCell))
   cells.forEach(cell => cell.addEventListener('contextmenu', addFlag))
-  cells.forEach(cell => cell.addEventListener('click', findAdjCells))
-  cells.forEach(cell => cell.addEventListener('click', openCells))
-  resetBtn.forEach(btn => btn.addEventListener('click', resetGame))
+  // cells.forEach(cell => cell.addEventListener('click', findAdjCells))
+  cells.forEach(cell => cell.addEventListener('click', winGame))
+  cells.forEach(cell => cell.addEventListener('contextmenu', winGame))
+  resetBtn.addEventListener('click', resetGame)
+  newGameBtn.addEventListener('click', resetGame)
+
+
   overlay.addEventListener('click', overlayOff)
 }
 window.addEventListener('DOMContentLoaded', init)
