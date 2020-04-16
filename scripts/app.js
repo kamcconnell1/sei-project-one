@@ -261,6 +261,7 @@ function init() {
   function gameOver() {
     if (event.target.classList.contains('bomb')) {
       clearInterval(t)
+
       // event.target.style.visibility = 'visible'
 
 
@@ -285,9 +286,14 @@ function init() {
       //   }
       // }
 
+      
       cells.filter(cell => {
-        if (cell.classList.contains('bomb')) cell.classList.remove('cover', 'flag')
-      })
+        if (cell.classList.contains('bomb')) {
+          cell.classList.remove('cover', 'flag') 
+          cell.classList.add('bomb-clicked')
+        }
+      }
+      )
       cells.forEach(cell => cell.removeEventListener('click', revealCell))
       cells.forEach(cell => cell.removeEventListener('contextmenu', addFlag))
       cells.forEach(cell => cell.removeEventListener('click', findAdjCells))

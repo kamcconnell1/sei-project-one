@@ -159,9 +159,9 @@ select {
 /* -----------------------Extra Styling---------------- */
 
 .grid div.bomb {
-  /* background-image: url(../assets/bomb2.gif) hidden; */
+  /* background-image: url(../assets/bomb2.gif); */
   /* background-image: url(../assets/game_bomb.png); */
-  background-color: red;
+  /* background-color: red; */
   background-repeat: no-repeat;
   background-size: contain;
   background-position: center;
@@ -170,8 +170,11 @@ select {
   font-weight: lighter;
   color: rgb(120, 120, 120);
   color: transparent;
+  /* z-index: -1; */
 }
-
+.grid div.bomb-clicked {
+  background-image: url(../assets/bomb2.gif);
+}
 
 .grid div.hint {
   background-color: indianred;
