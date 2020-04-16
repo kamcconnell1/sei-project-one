@@ -12,73 +12,85 @@ function init() {
   const overlayTime = document.querySelector('#time')
   const overlayClicks = document.querySelector('#clicks')
   // const smileyFace = document.querySelector('#smiley-face')
-  // const chooseLevel = document.querySelector('#level')
+  const chooseLevel = document.querySelector('#level')
   
   // * Grid Variables
-  const cells = []
-  const width = 9
+  let cells = []
+  let width = 9
   const cellCount = width * width
+  grid.style.width = '360px'
+  grid.style.height = '360px'
+
+
+
+
+
   // eslint-disable-next-line prefer-const
   
   // * Game Variables
   // eslint-disable-next-line prefer-const
   let bombCount = 10 //this will need to be updated to link to width when size increases 
-  let bombPosition = []
+  // const bombPosition = []
   let bombPositions = []
   const flagPositions = []
   let clickCount = 0
   let totalSeconds = 0
-  let smiley
+  // let smiley
   let t
-
-
-
-
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
   // *-------------------------- Functions On Page Load -------------------------------------
-
+  
   //----------------------------- Create the cells ------------------------------------------
+  
   function createCells() {
-
-    grid.style.width = '450px'
-    grid.style.height = '450px'
     
     for (let i = 0; i < cellCount; i++) {
       const cell = document.createElement('div')
-      cell.style.width = '50px'
-      cell.style.height = '50px'
       grid.appendChild(cell)
-      // cell.textContent = i
+      cell.textContent = i
       cells.push(cell)
+      cell.style.width = '40px'
+      cell.style.height = '40px'
     }
     
   }
-
+  
   //----------------------------- Position the bombs ----------------------------------------
   function positionBombs() {
     bombPositions = []
-    for (let i = 0; i <= bombCount - 1; i++) {
-      bombPosition = Math.floor(Math.random() * cellCount)
-      if (cells[bombPosition].classList.contains('bomb')) {
-        bombPosition = Math.floor(Math.random() * cellCount)
-        cells[bombPosition].classList.add('bomb')
-        
-      } else {
-        cells[bombPosition].classList.add('bomb')
-      }
-      bombPositions.push(bombPosition)
+    while (bombPositions.length < bombCount) {
+      const bombPosition = Math.floor(Math.random() * cellCount)
+      // if (cells[bombPosition].classList.contains('bomb')) 
+      if (bombPositions.indexOf(bombPosition) === -1) bombPositions.push(bombPosition)
     }
+    // console.log(bombPositions)
+    bombPositions.forEach(i => {
+      cells[i].classList.add('bomb')
+    })
     bombCounter.textContent = bombCount
     clickCounter.textContent = clickCount
-    console.log(`Bomb in divs ${bombPositions}, (${bombPositions.length})`) 
+    // console.log(`Bomb in divs ${bombPositions}, (${bombPositions.length})`) 
   }
   
-  console.log(cells)
-
-
+  
+  
   // -------------------------- Position the hints ------------------------------------------
   function positionHints() {
     cells.forEach((cell, i) => {
-     
+      // console.log('I am the cell', i) 
+      
       const x = i % width   //this stops the cells going over the line below
       //these help to look for the cells around the cell am looking at
       const northWestCell = cells[i - width - 1]
@@ -93,60 +105,72 @@ function init() {
       // these check that the cell to the right / left actually exist 
       const westWall = x > 0
       const eastWall = x < width - 1
-  
-      console.log('I am the cell', i) 
+      
       let mineCount = 0
+      // console.log(i,'has bomb?', !cell.classList.contains('bomb'))
       if (!cell.classList.contains('bomb')) {
-        // console.log(cell,'has bomb?', !cell.classList.contains('bomb'))
         if  (westWall && northWestCell && northWestCell.classList.contains('bomb')) ++mineCount
-        // console.log(northWestCell.classList.contains('bomb'))
+        // console.log(westWall && northWestCell && northWestCell.classList.contains('bomb'))
+        // console.log(northWestCell)
         
         if (northCell && northCell.classList.contains('bomb')) mineCount++
         if (eastWall && northEastCell && northEastCell.classList.contains('bomb')) mineCount++
         if (westWall && westCell && westCell.classList.contains('bomb')) mineCount++
         if (eastWall && eastCell && eastCell.classList.contains('bomb')) mineCount++
         if (westWall && southWestCell && southWestCell.classList.contains('bomb')) mineCount++
-        if (southCell && !southCell.classList.contains('bomb')) mineCount++
+        if (southCell && southCell.classList.contains('bomb')) mineCount++
         if (eastWall && southEastCell && southEastCell.classList.contains('bomb')) mineCount++
+        cell.textContent = mineCount
         
-        console.log(mineCount)
-        
-        // cell.textContent = mineCount
-        
-      
       }
     })
   }
   
-
-
+  
+  
   // --------------------------- Cover the Grid ---------------------------------------------
   function coverGrid() {
     cells.map(cell => {
       cell.classList.add('cover')
     })
   }
-
-
+  
+  
   // *-------------------------- Select Game Options------------------------------------------
+  
+  function changeLevel() {
+    console.log(chooseLevel.value)
+    cells = []
+    bombPositions = []
+    if (chooseLevel.value === 'intermediate') {
+      width = 16
+      bombCount = 40
 
+      createCells()
+      console.log(cells.length)
+      console.log(bombPositions)
+      
+      grid.style.width = '640px'
+      grid.style.height = '640px'
+      console.log(cells)
+      positionBombs()
+      positionHints()
+    }
+  }
+  
   // function changeLevel() {
-  //   console.log(chooseLevel.value)
-  //   if (chooseLevel.value === 'intermediate') {
+  //   console.log('changed', 'new value', chooseLevel.value)
+  //   console.log(width)
+  //   if (chooseLevel.value === 'intermediate') 
   //     width = 16
-  //     bombCount = 40
-  //     cells = []
-  //     createCells()
-  //     console.log(cells)
-  //     positionBombs()
-  //     positionHints()
-  //   }
   // }
-
-
-
+    
+    
+    
+    
+    
   // * -------------------- Functions for Playing the Game ----------------------------------
-
+    
   // -------------------------- Timer ----------------------------------------
   
   // Help on how to add the timer taken from here 
@@ -199,7 +223,7 @@ function init() {
     const i = cells.indexOf(event.target)
     const x = i % width
     const northWestCell = cells[i - width - 1]
-    const northCell = cells[i - 9]
+    const northCell = cells[i - width]
     const northEastCell = cells[i - width + 1]
     const westCell = cells[i - 1]
     const eastCell = cells[i + 1]
@@ -218,9 +242,9 @@ function init() {
     if (eastWall && northEastCell && !northEastCell.classList.contains('bomb')) adjCells.push(i - width + 1)
     if (westWall && westCell && !westCell.classList.contains('bomb')) adjCells.push(i - 1)
     if (eastWall && eastCell && !eastCell.classList.contains('bomb')) adjCells.push(i + 1)
-    if (westWall && southWestCell && !southWestCell.classList.contains('bomb')) adjCells.push(i + 8)
-    if (southCell && !southCell.classList.contains('bomb')) adjCells.push(i + 9)
-    if (eastWall && southEastCell && !southEastCell.classList.contains('bomb')) adjCells.push(i + 10)
+    if (westWall && southWestCell && !southWestCell.classList.contains('bomb')) adjCells.push(i + width - 1)
+    if (southCell && !southCell.classList.contains('bomb')) adjCells.push(i + width)
+    if (eastWall && southEastCell && !southEastCell.classList.contains('bomb')) adjCells.push(i + width + 1)
     
     cells[i].classList.remove('cover') 
     cells[i].textContent = ''
@@ -363,10 +387,10 @@ function init() {
   // *------------------------------ Event Listeners -----------------------------------------
   window.addEventListener('load', positionBombs)
   window.addEventListener('load', positionHints)
-  // window.addEventListener('load', coverGrid)
-
+  window.addEventListener('load', coverGrid)
+  
+  chooseLevel.addEventListener('change', changeLevel)
   // chooseLevel.addEventListener('change',positionBombs)
-  // chooseLevel.addEventListener('change', changeLevel)
   // smileyFace.addEventListener('mouseenter', handleMouseEnter)
   // smileyFace.addEventListener('mouseleave', handleMouseLeave)
 
