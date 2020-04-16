@@ -11,7 +11,7 @@ function init() {
   const overlay = document.querySelector('#overlay')
   const overlayTime = document.querySelector('#time')
   const overlayClicks = document.querySelector('#clicks')
-  const smileyFace = document.querySelector('#smiley-face')
+  // const smileyFace = document.querySelector('#smiley-face')
   // const chooseLevel = document.querySelector('#level')
   
   // * Grid Variables
@@ -28,7 +28,7 @@ function init() {
   const flagPositions = []
   let clickCount = 0
   let totalSeconds = 0
-  
+  let smiley
   let t
 
 
@@ -38,12 +38,19 @@ function init() {
 
   //----------------------------- Create the cells ------------------------------------------
   function createCells() {
+
+    grid.style.width = '450px'
+    grid.style.height = '450px'
+    
     for (let i = 0; i < cellCount; i++) {
       const cell = document.createElement('div')
+      cell.style.width = '50px'
+      cell.style.height = '50px'
       grid.appendChild(cell)
-      cell.textContent = i
+      // cell.textContent = i
       cells.push(cell)
     }
+    
   }
 
   //----------------------------- Position the bombs ----------------------------------------
@@ -65,6 +72,9 @@ function init() {
     console.log(`Bomb in divs ${bombPositions}, (${bombPositions.length})`) 
   }
   
+  console.log(cells)
+
+
   // -------------------------- Position the hints ------------------------------------------
   function positionHints() {
     cells.forEach((cell, i) => {
@@ -72,7 +82,7 @@ function init() {
       const x = i % width   //this stops the cells going over the line below
       //these help to look for the cells around the cell am looking at
       const northWestCell = cells[i - width - 1]
-      const northCell = cells[i - 9]
+      const northCell = cells[i - width]
       const northEastCell = cells[i - width + 1]
       const westCell = cells[i - 1]
       const eastCell = cells[i + 1]
@@ -84,20 +94,26 @@ function init() {
       const westWall = x > 0
       const eastWall = x < width - 1
   
-      // console.log('I am the cell', i) 
+      console.log('I am the cell', i) 
       let mineCount = 0
-      if (!cell.hasAttributes('.bomb')) {
-        // console.log(cell,'has bomb?', !cell.hasAttributes('.bomb'))
-        if  (westWall && northWestCell && northWestCell.hasAttributes('.bomb')) ++mineCount
-        if (northCell && northCell.hasAttributes('.bomb')) mineCount++
-        if (eastWall && northEastCell && northEastCell.hasAttributes('.bomb')) mineCount++
-        if (westWall && westCell && westCell.hasAttributes('.bomb')) mineCount++
-        if (eastWall && eastCell && eastCell.hasAttributes('.bomb')) mineCount++
-        if (westWall && southWestCell && southWestCell.hasAttributes('.bomb')) mineCount++
-        if (southCell && southCell.hasAttributes('.bomb')) mineCount++
-        if (eastWall && southEastCell && southEastCell.hasAttributes('.bomb')) mineCount++
-        cell.textContent = mineCount
-        // cell.textContent = hintNum > 0 ? hintNum : ''
+      if (!cell.classList.contains('bomb')) {
+        // console.log(cell,'has bomb?', !cell.classList.contains('bomb'))
+        if  (westWall && northWestCell && northWestCell.classList.contains('bomb')) ++mineCount
+        // console.log(northWestCell.classList.contains('bomb'))
+        
+        if (northCell && northCell.classList.contains('bomb')) mineCount++
+        if (eastWall && northEastCell && northEastCell.classList.contains('bomb')) mineCount++
+        if (westWall && westCell && westCell.classList.contains('bomb')) mineCount++
+        if (eastWall && eastCell && eastCell.classList.contains('bomb')) mineCount++
+        if (westWall && southWestCell && southWestCell.classList.contains('bomb')) mineCount++
+        if (southCell && !southCell.classList.contains('bomb')) mineCount++
+        if (eastWall && southEastCell && southEastCell.classList.contains('bomb')) mineCount++
+        
+        console.log(mineCount)
+        
+        // cell.textContent = mineCount
+        
+      
       }
     })
   }
@@ -197,6 +213,7 @@ function init() {
     
     
     if  (westWall && northWestCell && !northWestCell.classList.contains('bomb')) adjCells.push(i - width - 1)
+    
     if (northCell && !northCell.classList.contains('bomb'))  adjCells.push(i - width)
     if (eastWall && northEastCell && !northEastCell.classList.contains('bomb')) adjCells.push(i - width + 1)
     if (westWall && westCell && !westCell.classList.contains('bomb')) adjCells.push(i - 1)
@@ -332,7 +349,10 @@ function init() {
     // positionHints()
     // coverGrid()
     location.reload()
-    // overlay.style.display = 'none'
+    // smiley = document.createElement('img')
+    // smiley.setAttribute('src', 'assets/happy_face.png')
+    // smiley.setAttribute('width', 80)
+    
   }
 
 
@@ -343,7 +363,7 @@ function init() {
   // *------------------------------ Event Listeners -----------------------------------------
   window.addEventListener('load', positionBombs)
   window.addEventListener('load', positionHints)
-  window.addEventListener('load', coverGrid)
+  // window.addEventListener('load', coverGrid)
 
   // chooseLevel.addEventListener('change',positionBombs)
   // chooseLevel.addEventListener('change', changeLevel)

@@ -25,15 +25,16 @@ h1 {
 }
 
 /* -----------------------Flex Containers---------------- */
+
+
 .game-board {
   display: flex;
   flex-direction: column;
-  width: 500px;
+  /* width: 500px; */
   position: relative;
   margin: 0 auto;
   padding-top: 20px;
   cursor: pointer;
-  
 }
 
 .controls-wrapper {
@@ -56,9 +57,7 @@ h1 {
 }
 
 .grid-wrapper {
-  display: flex;
-  order: 1;
-  justify-content: center;
+  align-self: center;
 }
 
 /* -----------------------Flex Items---------------- */
@@ -122,8 +121,8 @@ h1 {
   display: flex;
   flex-wrap: wrap;
   height: 100%;
-  height: 500px;
-  width: 500px;
+  /* height: 500px;
+  width: 500px; */
 }
 
 .grid div {
@@ -131,8 +130,8 @@ h1 {
   flex-grow: 1;
   background-color: #8DA7BE;
   border: 0.5px solid lightgray;
-  height: 11.11%;
-  width: 11.11%; 
+  /* height: 11.11%;
+  width: 11.11%;  */
   font-weight: bold;
   justify-content: center;
   align-items: center;
@@ -161,7 +160,7 @@ select {
 .grid div.bomb {
   /* background-image: url(../assets/bomb2.gif); */
   /* background-image: url(../assets/game_bomb.png); */
-  /* background-color: red; */
+  background-color: red;
   background-repeat: no-repeat;
   background-size: contain;
   background-position: center;
@@ -169,7 +168,7 @@ select {
   font-size: 20px;
   font-weight: lighter;
   color: rgb(120, 120, 120);
-  color: transparent;
+  /* color: transparent; */
   /* z-index: -1; */
 }
 .grid div.bomb-clicked {
@@ -184,9 +183,9 @@ select {
 
 .grid div.cover {
   border: 1px solid black;
-  background-color: rgba(0,0,0,0.2);
+  /* background-color: rgba(0,0,0,0.2); */
   color: transparent; 
-  box-shadow: inset 5px 5px 10px #FFF, inset -3px -3px 5px #777; 
+  /* box-shadow: inset 5px 5px 10px #FFF, inset -3px -3px 5px #777;  */
   /* z-index: 1; */
 }
 
