@@ -11,15 +11,16 @@ function init() {
   const overlay = document.querySelector('#overlay')
   const overlayTime = document.querySelector('#time')
   const overlayClicks = document.querySelector('#clicks')
+  const audio = document.querySelector('.audio')
   // const smileyFace = document.querySelector('#smiley-face')
-  const chooseLevel = document.querySelector('#level')
+  // const chooseLevel = document.querySelector('#level')
   
   // * Grid Variables
-  let cells = []
-  let width = 9
+  const cells = []
+  const width = 9
   const cellCount = width * width
-  grid.style.width = '360px'
-  grid.style.height = '360px'
+  grid.style.width = '450px'
+  grid.style.height = '450px'
 
 
 
@@ -61,8 +62,8 @@ function init() {
       grid.appendChild(cell)
       cell.textContent = i
       cells.push(cell)
-      cell.style.width = '40px'
-      cell.style.height = '40px'
+      cell.style.width = '50px'
+      cell.style.height = '50px'
     }
     
   }
@@ -138,35 +139,29 @@ function init() {
   
   // *-------------------------- Select Game Options------------------------------------------
   
-  function changeLevel() {
-    console.log(chooseLevel.value)
-    cells = []
-    bombPositions = []
-    if (chooseLevel.value === 'intermediate') {
-      width = 16
-      bombCount = 40
-
-      createCells()
-      console.log(cells.length)
-      console.log(bombPositions)
-      
-      grid.style.width = '640px'
-      grid.style.height = '640px'
-      console.log(cells)
-      positionBombs()
-      positionHints()
-    }
-  }
-  
   // function changeLevel() {
-  //   console.log('changed', 'new value', chooseLevel.value)
-  //   console.log(width)
-  //   if (chooseLevel.value === 'intermediate') 
+  //   console.log(chooseLevel.value)
+  //   cells = []
+  //   bombPositions = []
+
+
+
+  //   if (chooseLevel.value === 'intermediate') {
+  //     grid.style.width = '640px'
+  //     grid.style.height = '640px'
   //     width = 16
+  //     bombCount = 40
+
+  //     createCells
+  //     positionBombs
+      
+  //     console.log(cells)
+  //     console.log(bombPositions)
+      
+  //     positionHints
+  //   }
   // }
-    
-    
-    
+
     
     
   // * -------------------- Functions for Playing the Game ----------------------------------
@@ -198,23 +193,27 @@ function init() {
     // smileyFace = ('src','/assets/shocked_face.png') //!COME BACK TO THIS WANT THE FACE TO CHANGE ON CLICK
     const cell = event.target
     const i = cells.indexOf(cell)
+    // console.log(i)
+    
+    // const i = cells.indexOf(cell)
     clickCount += 1
     clickCounter.textContent = clickCount
     
     // this is for if click on a cell with a number in  
     if (cell.textContent > '0')  {
       cell.classList.remove('cover') 
-      console.log('removing one cell')
+      // console.log('removing one cell')
       // winGame()
     }
     if (cell.textContent === '0' ) {
       findAdjCells()
     }
-    // if (cells[i + 1].textContent === '0') {
+    // if (cells[i + 1].textContent === '') {
     //   findAdjCells()
     // }
-
   }
+
+  
   
   function findAdjCells() {
     const adjCells = []
@@ -253,7 +252,7 @@ function init() {
       cells[i].classList.remove('cover')
       if (cells[i].textContent === '0') cells[i].textContent = ''
     })
-    console.log(adjCells)
+    // console.log(adjCells)
   }
    
   
@@ -262,25 +261,26 @@ function init() {
   function addFlag(event) {
     event.preventDefault()
     const cell = event.target
-    flagPositions.push(cells.indexOf(event.target))
-    
+    const i = cells.indexOf(cell)
+
+    if (!cell.classList.contains('cover')) return 
+
+    if (cell.classList.contains('flag')) {
+      cell.classList.remove('flag')
+      bombCounter.textContent = parseInt(bombCounter.textContent) + 1
+      const index = flagPositions.indexOf(i)
+      flagPositions.splice(index, 1)
+    } else {
+      cell.classList.add('flag')
+      bombCounter.textContent = parseInt(bombCounter.textContent) - 1
+      flagPositions.push(i)
+    }
     console.log(flagPositions)
-    cell.classList.toggle('flag')
-    bombCounter.textContent -= 1
-    // if (!cell.hasAttributes('.flag')) {
-    //   cell.classList.remove(flag)
-    //   bombCounter.textContent += 1
-    // } else {
-    //   cell.classList.add('flag')
-    //   bombCounter.textContent -= 1
-    // }
- 
+    
 
     clickCount += 1
     clickCounter.textContent = clickCount
   }
- 
-
 
 
 
@@ -303,30 +303,12 @@ function init() {
     if (event.target.classList.contains('bomb')) {
       clearInterval(t)
 
-      // event.target.style.visibility = 'visible'
 
+      audio.src = 'assets/Bomb_noise.wav'
+      audio.play()
 
-      // const bombGif = document.createElement('img')
-      // bombGif.setAttribute('src', 'assets/bomb2.gif')
-      // bombGif.setAttribute('width', '500')
-      // background-size: contain; //! CAN I DO THIS ON JAVSCRIPT? HOW CAN I MOVE THE GIF TO THE LEFT??
-      // document.querySelector('.grid').appendChild(bombGif)
-      // event.target.appendChild(bombGif)
-
-
-
-      // setTimeout((event.target.removeChild(bombGif)), 2000 )
-      
-      // cells.forEach(delayLoop(display, 1000));
-     
-      // const delayLoop = (fn, delay) => {
-      //   return (x, i) => {
-      //     setTimeout(() => {
-      //       fn(x)
-      //     }, i * 1000)
-      //   }
-      // }
-
+      // setTimeout(audio.src = 'http://soundbible.com/mp3/Audience_Applause-Matthiew11-1206899159.mp3'
+      // audio.play())
       
       cells.filter(cell => {
         if (cell.classList.contains('bomb')) {
@@ -345,7 +327,7 @@ function init() {
   function winGame() {
     if (bombPositions.sort().join(',') === flagPositions.sort().join(',')) {
       console.log('won')
-      setTimeout(gameStats, 1000)
+      setTimeout(gameStats, 500)
     }
   }
   
@@ -366,17 +348,22 @@ function init() {
 
   // ------------------------------ Reset the Game -------------------------------------------
   function resetGame() {
-    // console.log('the reset button was clicked')
-    // cells.forEach(cell => cell.classList.remove('bomb', 'flag'))
-    // cells.forEach(cell => cell.textContent = '')
-    // positionBombs()
-    // positionHints()
-    // coverGrid()
-    location.reload()
-    // smiley = document.createElement('img')
-    // smiley.setAttribute('src', 'assets/happy_face.png')
-    // smiley.setAttribute('width', 80)
-    
+    console.log('the reset button was clicked')
+
+    cells.forEach(cell => cell.classList.remove('bomb', 'flag', 'bomb-clicked'))
+    cells.forEach(cell => cell.textContent = '')
+    positionBombs()
+    positionHints()
+    coverGrid()
+    clickCounter.textContent = 0
+    clearInterval(t)
+    minutesLabel.textContent = '00'
+    secondsLabel.textContent = '00'
+    cells.forEach(cell => cell.addEventListener('click', revealCell))
+    cells.forEach(cell => cell.addEventListener('contextmenu', addFlag))
+    cells.forEach(cell => cell.addEventListener('click', findAdjCells))
+    // t = setInterval(setTime, 1000)
+    // location.reload()
   }
 
 
@@ -388,8 +375,11 @@ function init() {
   window.addEventListener('load', positionBombs)
   window.addEventListener('load', positionHints)
   window.addEventListener('load', coverGrid)
+
+  // resetBtn.addEventListener('click', coverGrid)
+  // resetBtn.addEventListener('click', positionBombs)
   
-  chooseLevel.addEventListener('change', changeLevel)
+  // chooseLevel.addEventListener('change', changeLevel)
   // chooseLevel.addEventListener('change',positionBombs)
   // smileyFace.addEventListener('mouseenter', handleMouseEnter)
   // smileyFace.addEventListener('mouseleave', handleMouseLeave)
@@ -397,7 +387,7 @@ function init() {
   cells.forEach(cell => cell.addEventListener('click', gameOver))
   cells.forEach(cell => cell.addEventListener('click', revealCell))
   cells.forEach(cell => cell.addEventListener('contextmenu', addFlag))
-  // cells.forEach(cell => cell.addEventListener('click', findAdjCells))
+  // cells.forEach(cell => cell.addEventListener('click', setTime))
   cells.forEach(cell => cell.addEventListener('click', winGame))
   cells.forEach(cell => cell.addEventListener('contextmenu', winGame))
   resetBtn.addEventListener('click', resetGame)
