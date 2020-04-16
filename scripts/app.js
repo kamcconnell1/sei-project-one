@@ -13,14 +13,15 @@ function init() {
   const overlayClicks = document.querySelector('#clicks')
   const audio = document.querySelector('.audio')
   // const smileyFace = document.querySelector('#smiley-face')
-  // const chooseLevel = document.querySelector('#level')
+  const chooseLevel = document.querySelector('#level') 
   
   // * Grid Variables
-  const cells = []
-  const width = 9
+  // eslint-disable-next-line prefer-const
+  let cells = []
+  let width = 9
   const cellCount = width * width
-  grid.style.width = '450px'
-  grid.style.height = '450px'
+  grid.style.width = '360px'
+  grid.style.height = '360px'
 
 
 
@@ -40,33 +41,22 @@ function init() {
   let t
   
   
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
   // *-------------------------- Functions On Page Load -------------------------------------
   
   //----------------------------- Create the cells ------------------------------------------
   
-  function createCells() {
+  function createCells(width) {
     
-    for (let i = 0; i < cellCount; i++) {
+    for (let i = 0; i < (width * width); i++) {
       const cell = document.createElement('div')
       grid.appendChild(cell)
       cell.textContent = i
       cells.push(cell)
-      cell.style.width = '50px'
-      cell.style.height = '50px'
+      cell.style.width = '40px'
+      cell.style.height = '40px'
     }
-    
   }
+
   
   //----------------------------- Position the bombs ----------------------------------------
   function positionBombs() {
@@ -84,7 +74,7 @@ function init() {
     clickCounter.textContent = clickCount
     // console.log(`Bomb in divs ${bombPositions}, (${bombPositions.length})`) 
   }
-  
+  // positionBombs(10)
   
   
   // -------------------------- Position the hints ------------------------------------------
@@ -139,29 +129,56 @@ function init() {
   
   // *-------------------------- Select Game Options------------------------------------------
   
-  // function changeLevel() {
-  //   console.log(chooseLevel.value)
-  //   cells = []
-  //   bombPositions = []
+  function changeLevel() {
+    console.log(chooseLevel.value)
+    grid.textContent = ''
+    // console.log(cells)
+    cells = []
+    bombPositions = []
 
 
-
-  //   if (chooseLevel.value === 'intermediate') {
-  //     grid.style.width = '640px'
-  //     grid.style.height = '640px'
-  //     width = 16
-  //     bombCount = 40
-
-  //     createCells
-  //     positionBombs
+    if (chooseLevel.value === 'intermediate') {
+      grid.style.width = '640px'
+      grid.style.height = '640px'
+      width = 16
+      createCells(16)
+      bombCount = 40
+      positionBombs()
+      console.log(bombPositions)
       
-  //     console.log(cells)
-  //     console.log(bombPositions)
-      
-  //     positionHints
-  //   }
-  // }
+      bombPositions.forEach(i => {
+        cells[i].classList.add('bomb')
+      })
+    }
 
+    if (chooseLevel.value === 'beginner') {
+        
+      grid.style.width = '360px'
+      grid.style.height = '360px'
+      width = 9
+      createCells(9)
+      bombCount = 10
+      positionBombs()
+      console.log(bombPositions)
+        
+      bombPositions.forEach(i => {
+        cells[i].classList.add('bomb')
+      })
+
+    }
+
+
+
+    positionHints()
+
+    console.log(cells.length)
+    console.log(bombPositions)
+
+    coverGrid()
+      
+  }
+  
+  
     
     
   // * -------------------- Functions for Playing the Game ----------------------------------
@@ -370,7 +387,7 @@ function init() {
 
 
 
-  createCells()
+  createCells(9)
   // *------------------------------ Event Listeners -----------------------------------------
   window.addEventListener('load', positionBombs)
   window.addEventListener('load', positionHints)
@@ -379,7 +396,7 @@ function init() {
   // resetBtn.addEventListener('click', coverGrid)
   // resetBtn.addEventListener('click', positionBombs)
   
-  // chooseLevel.addEventListener('change', changeLevel)
+  chooseLevel.addEventListener('change', changeLevel)
   // chooseLevel.addEventListener('change',positionBombs)
   // smileyFace.addEventListener('mouseenter', handleMouseEnter)
   // smileyFace.addEventListener('mouseleave', handleMouseLeave)
