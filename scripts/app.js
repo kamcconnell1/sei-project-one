@@ -324,11 +324,11 @@ function init() {
 
 
   function mouseDown(event) {
-    if (event.which === 1) face.src  = 'assets/shocked_face.png'
+    if (event.which === 1) face.src  = './assets/shocked_face.png'
   }
 
   function mouseUp() {
-    face.src  = 'assets/happy_face.png'
+    face.src  = './assets/happy_face.png'
   }
 
 
