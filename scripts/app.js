@@ -2,6 +2,7 @@ function init() {
 
   // * DOM Elements
   const grid = document.querySelector('.grid')
+  const gameSize = document.querySelector('.game-board')
   const resetBtn = document.querySelector('#reset')
   const newGameBtn = document.querySelector('#new-game')
   const bombCounter = document.querySelector('#bomb-count')
@@ -19,9 +20,9 @@ function init() {
   // eslint-disable-next-line prefer-const
   let cells = []
   let width = 9
-  const cellCount = width * width
-  grid.style.width = '360px'
-  grid.style.height = '360px'
+  grid.style.width = '270px'
+  grid.style.height = '270px'
+  gameSize.style.width = '400px'
 
 
 
@@ -34,7 +35,7 @@ function init() {
   let bombCount = 10 //this will need to be updated to link to width when size increases 
   // const bombPosition = []
   let bombPositions = []
-  const flagPositions = []
+  let flagPositions = []
   let clickCount = 0
   let totalSeconds = 0
   // let smiley
@@ -52,8 +53,8 @@ function init() {
       grid.appendChild(cell)
       cell.textContent = i
       cells.push(cell)
-      cell.style.width = '40px'
-      cell.style.height = '40px'
+      cell.style.width = '30px'
+      cell.style.height = '30px'
     }
   }
 
@@ -62,11 +63,11 @@ function init() {
   function positionBombs() {
     bombPositions = []
     while (bombPositions.length < bombCount) {
-      const bombPosition = Math.floor(Math.random() * cellCount)
-      // if (cells[bombPosition].classList.contains('bomb')) 
+      const bombPosition = Math.floor(Math.random() * (width * width))
+
       if (bombPositions.indexOf(bombPosition) === -1) bombPositions.push(bombPosition)
     }
-    // console.log(bombPositions)
+    console.log(bombPositions)
     bombPositions.forEach(i => {
       cells[i].classList.add('bomb')
     })
@@ -130,52 +131,53 @@ function init() {
   // *-------------------------- Select Game Options------------------------------------------
   
   function changeLevel() {
-    console.log(chooseLevel.value)
     grid.textContent = ''
     // console.log(cells)
     cells = []
     bombPositions = []
-
+    flagPositions = []
 
     if (chooseLevel.value === 'intermediate') {
-      grid.style.width = '640px'
-      grid.style.height = '640px'
+      grid.style.width = '480px'
+      grid.style.height = '480px'
+      gameSize.style.width = '480px'
       width = 16
       createCells(16)
       bombCount = 40
-      positionBombs()
-      console.log(bombPositions)
-      
-      bombPositions.forEach(i => {
-        cells[i].classList.add('bomb')
-      })
     }
-
     if (chooseLevel.value === 'beginner') {
-        
-      grid.style.width = '360px'
-      grid.style.height = '360px'
+    
+      grid.style.width = '270px'
+      grid.style.height = '270px'
+      gameSize.style.width = '400px'
       width = 9
       createCells(9)
       bombCount = 10
-      positionBombs()
-      console.log(bombPositions)
-        
-      bombPositions.forEach(i => {
-        cells[i].classList.add('bomb')
-      })
-
+    }
+    if (chooseLevel.value === 'advanced') {
+      grid.style.width = '600px'
+      grid.style.height = '600px'
+      gameSize.style.width = '600px'
+      width = 20
+      createCells(20)
+      bombCount = 60
     }
 
 
-
+    positionBombs()
+    bombPositions.forEach(i => {
+      cells[i].classList.add('bomb')
+    })
     positionHints()
-
     console.log(cells.length)
-    console.log(bombPositions)
-
+    console.log(bombPositions.length)
     coverGrid()
-      
+    // winGame()
+    cells.forEach(cell => cell.addEventListener('click', revealCell))
+    cells.forEach(cell => cell.addEventListener('contextmenu', addFlag))
+    cells.forEach(cell => cell.addEventListener('click', gameOver))
+    cells.forEach(cell => cell.addEventListener('click', winGame))
+    cells.forEach(cell => cell.addEventListener('contextmenu', winGame))
   }
   
   
@@ -209,8 +211,9 @@ function init() {
   function revealCell(event) {
     // smileyFace = ('src','/assets/shocked_face.png') //!COME BACK TO THIS WANT THE FACE TO CHANGE ON CLICK
     const cell = event.target
-    const i = cells.indexOf(cell)
+    // const i = cells.indexOf(cell)
     // console.log(i)
+    
     
     // const i = cells.indexOf(cell)
     clickCount += 1
