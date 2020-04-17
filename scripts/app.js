@@ -13,11 +13,10 @@ function init() {
   const overlayTime = document.querySelector('#time')
   const overlayClicks = document.querySelector('#clicks')
   const audio = document.querySelector('.audio')
-  // const smileyFace = document.querySelector('#smiley-face')
+  const face = document.querySelector('#smiley-face')
   const chooseLevel = document.querySelector('#level') 
   
   // * Grid Variables
-  // eslint-disable-next-line prefer-const
   let cells = []
   let width = 9
   grid.style.width = '270px'
@@ -28,17 +27,14 @@ function init() {
 
 
 
-  // eslint-disable-next-line prefer-const
+
   
   // * Game Variables
-  // eslint-disable-next-line prefer-const
   let bombCount = 10 //this will need to be updated to link to width when size increases 
-  // const bombPosition = []
   let bombPositions = []
   let flagPositions = []
   let clickCount = 0
   let totalSeconds = 0
-  // let smiley
   let t
   
   
@@ -75,7 +71,7 @@ function init() {
     clickCounter.textContent = clickCount
     // console.log(`Bomb in divs ${bombPositions}, (${bombPositions.length})`) 
   }
-  // positionBombs(10)
+
   
   
   // -------------------------- Position the hints ------------------------------------------
@@ -102,9 +98,6 @@ function init() {
       // console.log(i,'has bomb?', !cell.classList.contains('bomb'))
       if (!cell.classList.contains('bomb')) {
         if  (westWall && northWestCell && northWestCell.classList.contains('bomb')) ++mineCount
-        // console.log(westWall && northWestCell && northWestCell.classList.contains('bomb'))
-        // console.log(northWestCell)
-        
         if (northCell && northCell.classList.contains('bomb')) mineCount++
         if (eastWall && northEastCell && northEastCell.classList.contains('bomb')) mineCount++
         if (westWall && westCell && westCell.classList.contains('bomb')) mineCount++
@@ -209,13 +202,7 @@ function init() {
   
   // ? --------------------------------Click Events----------------------------------------
   function revealCell(event) {
-    // smileyFace = ('src','/assets/shocked_face.png') //!COME BACK TO THIS WANT THE FACE TO CHANGE ON CLICK
     const cell = event.target
-    // const i = cells.indexOf(cell)
-    // console.log(i)
-    
-    
-    // const i = cells.indexOf(cell)
     clickCount += 1
     clickCounter.textContent = clickCount
     
@@ -223,7 +210,6 @@ function init() {
     if (cell.textContent > '0')  {
       cell.classList.remove('cover') 
       // console.log('removing one cell')
-      // winGame()
     }
     if (cell.textContent === '0' ) {
       findAdjCells()
@@ -299,33 +285,15 @@ function init() {
     clickCounter.textContent = clickCount
   }
 
-
-
-  // ! NEED TO CHANGE NOTHING IS HAPPENING 
-  // function handleMouseEnter(event) {
-  //   console.log('mouse has entered the box')
-  //   const img = document.createElement('img')
-  //   img.setAttribute('src', 'assets/shocked_face.png')
-  //   document.getElementById('smiley-face').appendChild(img)
-  // }
-  // function handleMouseLeave() {
-  //   console.log('mouse has left the box')
-  //   // nameSpan.textContent = ''
-  // }
-  
-  
-  
   
   function gameOver() {
     if (event.target.classList.contains('bomb')) {
       clearInterval(t)
 
-
       audio.src = 'assets/Bomb_noise.wav'
       audio.play()
 
-      // setTimeout(audio.src = 'http://soundbible.com/mp3/Audience_Applause-Matthiew11-1206899159.mp3'
-      // audio.play())
+      face.src  = 'assets/sad_face.png'
       
       cells.filter(cell => {
         if (cell.classList.contains('bomb')) {
@@ -347,8 +315,6 @@ function init() {
       setTimeout(gameStats, 500)
     }
   }
-  
-
 
   // Show statistics of the user's performance after the game is finished
   function gameStats(){
@@ -357,8 +323,14 @@ function init() {
     overlayClicks.textContent = ` ${clickCounter.textContent}`
   }
   
-  function overlayOff() {
-    overlay.style.display = 'none'
+
+
+  function mouseDown(event) {
+    if (event.which === 1) face.src  = 'assets/shocked_face.png'
+  }
+
+  function mouseUp() {
+    face.src  = 'assets/happy_face.png'
   }
 
 
@@ -382,11 +354,14 @@ function init() {
     cells.forEach(cell => cell.addEventListener('click', gameOver))
     cells.forEach(cell => cell.addEventListener('click', winGame))
     cells.forEach(cell => cell.addEventListener('contextmenu', winGame))
-
+    overlay.style.display = 'none'
+    face.src  = 'assets/happy_face.png'
     // t = setInterval(setTime, 1000)
     // location.reload()
   }
-
+  function overlayOff() {
+    overlay.style.display = 'none'
+  }
 
 
 
@@ -397,14 +372,8 @@ function init() {
   window.addEventListener('load', positionHints)
   window.addEventListener('load', coverGrid)
 
-  // resetBtn.addEventListener('click', coverGrid)
-  // resetBtn.addEventListener('click', positionBombs)
-  
-  chooseLevel.addEventListener('change', changeLevel)
-  // chooseLevel.addEventListener('change',positionBombs)
-  // smileyFace.addEventListener('mouseenter', handleMouseEnter)
-  // smileyFace.addEventListener('mouseleave', handleMouseLeave)
 
+  chooseLevel.addEventListener('change', changeLevel)
   cells.forEach(cell => cell.addEventListener('click', gameOver))
   cells.forEach(cell => cell.addEventListener('click', revealCell))
   cells.forEach(cell => cell.addEventListener('contextmenu', addFlag))
@@ -413,8 +382,10 @@ function init() {
   cells.forEach(cell => cell.addEventListener('contextmenu', winGame))
   resetBtn.addEventListener('click', resetGame)
   newGameBtn.addEventListener('click', resetGame)
-
-
+  cells.forEach(cell => cell.addEventListener('mouseup', mouseUp))
+  cells.forEach(cell => cell.addEventListener('mousedown', mouseDown))
   overlay.addEventListener('click', overlayOff)
+
+
 }
 window.addEventListener('DOMContentLoaded', init)

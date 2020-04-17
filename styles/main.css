@@ -25,7 +25,6 @@ body {
 .game-board {
   display: flex;
   flex-direction: column;
-  /* width: 450px; */
   position: relative;
   margin: 0 auto;
   padding-top: 10px;
@@ -36,8 +35,7 @@ body {
   display: flex;
   background-color: #4F6272;
   border-radius: 50px 50px 0 0;
-
-  height: 15vh;
+  height: 100px;
   justify-content: space-evenly;
   align-items: center;
   box-shadow: 0 0 20px 0 rgba(0, 0, 0, 0.2);
@@ -57,7 +55,6 @@ body {
 .options-wrapper {
   display: flex;
   flex-direction: column;
-  /* order: 2; */
   justify-content: space-around;
   /* border: black solid 1px; */
   align-items: center;
@@ -94,7 +91,6 @@ body {
 
 .timer {
   display: inline;
-  /* position: fixed; */
 }
 
 .bomb-counter, .game-counter {
@@ -114,13 +110,7 @@ body {
 #reset:active {
   transform: translateX(2px) translateY(3px);
 }
-/* 
-#rest .shocked-face {
-  display: none;
-}
-#reset:hover .shocked-face {
-  display: inline;
-} */
+
 
 .grid {
   align-items: center;
@@ -142,19 +132,12 @@ body {
   
 }
 
-/* select {
-  width: 200px;
-  height: 30px;
-} */
-
 /* -----------------------Extra Styling---------------- */
 
 .grid div.bomb {
-  background-color: red;
   background-repeat: no-repeat;
   background-size: contain;
   background-position: center;
-  cursor: pointer;
   font-weight: lighter;
   color: rgb(120, 120, 120);
   color: transparent;
@@ -163,18 +146,12 @@ body {
   background-image: url(../assets/bomb2.gif);
 }
 
-/* .grid div.hint {
-  
-  font-size: 10px;
-  color:black;
-} */
 
 .grid div.cover {
   border: 0.5px solid #E5E8E8 ;
-  /* background-color: rgba(0,0,0,0.2); */
-  /* color: transparent;  */
-  /* box-shadow: inset 5px 5px 10px #FFF, inset -3px -3px 5px #707B7C;  */
-  /* z-index: 1; */
+  background-color: rgba(0,0,0,0.2);
+  color: transparent; 
+  box-shadow: inset 5px 5px 10px #FFF, inset -3px -3px 5px #707B7C; 
 }
 
 .grid div.flag {
@@ -191,11 +168,6 @@ select {
   margin-bottom: 5px;
   height: 30px;
 }
-/* .game-sizes { 
-  position: absolute;
-  bottom: 0;
-  box-shadow: 0 0 20px 0 rgba(0, 0, 0, 0.2);
-} */
 
 #overlay {
   position: fixed; /* Sit on top of the page content */
@@ -209,7 +181,6 @@ select {
   background-color: rgba(0,0,0,0.5); /* Black background with opacity */
   z-index: 2; /* Specify a stack order in case you're using a different order for other elements */
   cursor: pointer; /* Add a pointer on hover */
-  /* display: flex; SETTING THIS RUINS THE OVERLAY */
 }
 
 #overlay-box {
@@ -217,14 +188,11 @@ select {
   width: 600px; 
   height: 80%; 
   background-color: #ffffff; 
-  cursor: pointer; 
   border-radius: 75px;
   text-align: center;
 }
 #overlay-text {
-  /* /* display: flex; SETTING THIS RUINS THE OVERLAY */
  padding-top: 30px;
-
 }
 
 #overlay h2 {
@@ -241,6 +209,7 @@ select {
   width: 300px;
   height: 75px;
   border-radius: 100px;
+  outline: none;
   font-family: 'Montserrat', sans-serif;
   font-size: 20px;
   color: black;
