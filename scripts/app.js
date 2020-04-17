@@ -73,11 +73,9 @@ function init() {
   }
 
   
-  
   // -------------------------- Position the hints ------------------------------------------
   function positionHints() {
     cells.forEach((cell, i) => {
-      // console.log('I am the cell', i) 
       
       const x = i % width   //this stops the cells going over the line below
       //these help to look for the cells around the cell am looking at
@@ -95,7 +93,6 @@ function init() {
       const eastWall = x < width - 1
       
       let mineCount = 0
-      // console.log(i,'has bomb?', !cell.classList.contains('bomb'))
       if (!cell.classList.contains('bomb')) {
         if  (westWall && northWestCell && northWestCell.classList.contains('bomb')) ++mineCount
         if (northCell && northCell.classList.contains('bomb')) mineCount++
@@ -125,7 +122,6 @@ function init() {
   
   function changeLevel() {
     grid.textContent = ''
-    // console.log(cells)
     cells = []
     bombPositions = []
     flagPositions = []
@@ -161,11 +157,17 @@ function init() {
     bombPositions.forEach(i => {
       cells[i].classList.add('bomb')
     })
+
+    clearInterval(t)
+    totalSeconds = 0
+    minutesLabel.textContent = '00'
+    secondsLabel.textContent = '00'
+    t = setInterval(setTime, 1000)
+
     positionHints()
     console.log(cells.length)
     console.log(bombPositions.length)
     coverGrid()
-    // winGame()
     cells.forEach(cell => cell.addEventListener('click', revealCell))
     cells.forEach(cell => cell.addEventListener('contextmenu', addFlag))
     cells.forEach(cell => cell.addEventListener('click', gameOver))
@@ -209,14 +211,10 @@ function init() {
     // this is for if click on a cell with a number in  
     if (cell.textContent > '0')  {
       cell.classList.remove('cover') 
-      // console.log('removing one cell')
     }
     if (cell.textContent === '0' ) {
       findAdjCells()
     }
-    // if (cells[i + 1].textContent === '') {
-    //   findAdjCells()
-    // }
   }
 
   
@@ -224,6 +222,7 @@ function init() {
   function findAdjCells() {
     const adjCells = []
 
+    // ! DIDN'T GET RECURSIVE FORMULA WORKING PROPERLY SO LOOKS FOR THE 8 CELLS AROUND THE CLICK ONLY
 
     const i = cells.indexOf(event.target)
     const x = i % width
@@ -238,7 +237,7 @@ function init() {
       
     const westWall = x > 0
     const eastWall = x < width - 1
-    // ! This code is repeated from position hints - think how to refactor
+
     
     
     if  (westWall && northWestCell && !northWestCell.classList.contains('bomb')) adjCells.push(i - width - 1)
@@ -258,7 +257,6 @@ function init() {
       cells[i].classList.remove('cover')
       if (cells[i].textContent === '0') cells[i].textContent = ''
     })
-    // console.log(adjCells)
   }
    
   
@@ -339,6 +337,7 @@ function init() {
   function resetGame() {
     console.log('the reset button was clicked')
     cells.forEach(cell => cell.classList.remove('bomb', 'flag', 'bomb-clicked'))
+    clearInterval(t)
     bombPositions = []
     flagPositions = []
     // cells.forEach(cell => cell.textContent = '')
@@ -346,9 +345,7 @@ function init() {
     positionHints()
     coverGrid()
     clickCounter.textContent = 0
-    clearInterval(t)
-    minutesLabel.textContent = '00'
-    secondsLabel.textContent = '00'
+    clickCount = 0
     cells.forEach(cell => cell.addEventListener('click', revealCell))
     cells.forEach(cell => cell.addEventListener('contextmenu', addFlag))
     cells.forEach(cell => cell.addEventListener('click', gameOver))
@@ -356,8 +353,11 @@ function init() {
     cells.forEach(cell => cell.addEventListener('contextmenu', winGame))
     overlay.style.display = 'none'
     face.src  = 'assets/happy_face.png'
-    // t = setInterval(setTime, 1000)
-    // location.reload()
+    totalSeconds = 0
+    minutesLabel.textContent = '00'
+    secondsLabel.textContent = '00'
+    t = setInterval(setTime, 1000)
+
   }
   function overlayOff() {
     overlay.style.display = 'none'
