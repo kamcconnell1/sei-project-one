@@ -295,9 +295,6 @@ function init() {
       bombCounter.textContent = parseInt(bombCounter.textContent) - 1
       flagPositions.push(i)
     }
-    console.log(flagPositions)
-    
-
     clickCount += 1
     clickCounter.textContent = clickCount
   }
@@ -369,9 +366,10 @@ function init() {
   // ------------------------------ Reset the Game -------------------------------------------
   function resetGame() {
     console.log('the reset button was clicked')
-
     cells.forEach(cell => cell.classList.remove('bomb', 'flag', 'bomb-clicked'))
-    cells.forEach(cell => cell.textContent = '')
+    bombPositions = []
+    flagPositions = []
+    // cells.forEach(cell => cell.textContent = '')
     positionBombs()
     positionHints()
     coverGrid()
@@ -381,7 +379,10 @@ function init() {
     secondsLabel.textContent = '00'
     cells.forEach(cell => cell.addEventListener('click', revealCell))
     cells.forEach(cell => cell.addEventListener('contextmenu', addFlag))
-    cells.forEach(cell => cell.addEventListener('click', findAdjCells))
+    cells.forEach(cell => cell.addEventListener('click', gameOver))
+    cells.forEach(cell => cell.addEventListener('click', winGame))
+    cells.forEach(cell => cell.addEventListener('contextmenu', winGame))
+
     // t = setInterval(setTime, 1000)
     // location.reload()
   }
