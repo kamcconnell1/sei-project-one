@@ -150,7 +150,7 @@ body {
 .grid div.cover {
   border: 0.5px solid #E5E8E8 ;
   background-color: rgba(0,0,0,0.2);
-  /* color: transparent;  */
+  color: transparent; 
   box-shadow: inset 5px 5px 10px #FFF, inset -3px -3px 5px #707B7C; 
 }
 
