@@ -474,7 +474,6 @@ function init() {
       )
       cells.forEach(cell => cell.removeEventListener('click', revealCell))
       cells.forEach(cell => cell.removeEventListener('contextmenu', addFlag))
-      cells.forEach(cell => cell.removeEventListener('long-press', addFlag))
       cells.forEach(cell => cell.removeEventListener('click', findAdjCells))
     }
   }
@@ -520,7 +519,6 @@ function init() {
     clickCounter.textContent = 0
     clickCount = 0
     cells.forEach(cell => cell.addEventListener('contextmenu', addFlag))
-    cells.forEach(cell => cell.addEventListener('long-press', addFlag))
     cells.forEach(cell => cell.addEventListener('click', revealCell))
     cells.forEach(cell => cell.addEventListener('click', gameOver))
     cells.forEach(cell => cell.addEventListener('click', winGame))
@@ -551,7 +549,6 @@ function init() {
   cells.forEach(cell => cell.addEventListener('click', gameOver))
   cells.forEach(cell => cell.addEventListener('click', revealCell))
   cells.forEach(cell => cell.addEventListener('contextmenu', addFlag))
-  cells.forEach(cell => cell.addEventListener('long-press', addFlag))
   cells.forEach(cell => cell.addEventListener('click', winGame))
   cells.forEach(cell => cell.addEventListener('contextmenu', winGame))
   resetBtn.addEventListener('click', resetGame)
