@@ -205,27 +205,40 @@ function init() {
   // ? --------------------------------Click Events----------------------------------------
   function revealCell(event) {
     const cell = event.target
+    
     clickCount += 1
     clickCounter.textContent = clickCount
-    
+
+    if (cell.classList.contains('flag')) return 
+
     // this is for if click on a cell with a number in  
-    if (cell.textContent > '0')  {
-      cell.classList.remove('cover') 
+    if (cell.textContent > '0') {
+      cell.classList.remove('cover')
+      return
     }
-    if (cell.textContent === '0' ) {
-      findAdjCells()
-    }
+    
+    if (cell.textContent === '0') cell.textContent = ''
+    cell.classList.remove('cover')
+
+    floodFillEast(cells.indexOf(event.target))
+    floodFillNorthEast(cells.indexOf(event.target))
+    floodFillNorthWest(cells.indexOf(event.target))
+
+    floodFillWest(cells.indexOf(event.target))
+    floodFillSouthEast(cells.indexOf(event.target))
+    floodFillSouthWest(cells.indexOf(event.target))
+
+    floodFillNorth(cells.indexOf(event.target))
+    floodFillSouth(cells.indexOf(event.target))
+
   }
-
   
-  
-  function findAdjCells() {
-    const adjCells = []
 
-    // ! DIDN'T GET RECURSIVE FORMULA WORKING PROPERLY SO LOOKS FOR THE 8 CELLS AROUND THE CLICK ONLY
 
-    const i = cells.indexOf(event.target)
+  function findAdjCells(i) {
+
     const x = i % width
+    // ! This code is repeated from position hints - think how to refactor
     const northWestCell = cells[i - width - 1]
     const northCell = cells[i - width]
     const northEastCell = cells[i - width + 1]
@@ -234,32 +247,191 @@ function init() {
     const southWestCell = cells[i + width - 1]
     const southCell = cells[i + width]
     const southEastCell = cells[i + width + 1]
-      
+
     const westWall = x > 0
     const eastWall = x < width - 1
+    // const northWall = i > width
+    // const southWall = i < cells.length - width
 
-    
-    
-    if  (westWall && northWestCell && !northWestCell.classList.contains('bomb')) adjCells.push(i - width - 1)
-    
-    if (northCell && !northCell.classList.contains('bomb'))  adjCells.push(i - width)
-    if (eastWall && northEastCell && !northEastCell.classList.contains('bomb')) adjCells.push(i - width + 1)
-    if (westWall && westCell && !westCell.classList.contains('bomb')) adjCells.push(i - 1)
-    if (eastWall && eastCell && !eastCell.classList.contains('bomb')) adjCells.push(i + 1)
-    if (westWall && southWestCell && !southWestCell.classList.contains('bomb')) adjCells.push(i + width - 1)
-    if (southCell && !southCell.classList.contains('bomb')) adjCells.push(i + width)
-    if (eastWall && southEastCell && !southEastCell.classList.contains('bomb')) adjCells.push(i + width + 1)
-    
-    cells[i].classList.remove('cover') 
-    cells[i].textContent = ''
 
-    adjCells.forEach(i => {
-      cells[i].classList.remove('cover')
-      if (cells[i].textContent === '0') cells[i].textContent = ''
-    })
+    // if (cells[i].classList.contains('bomb')) return
+    // if (eastWall === false || westWall === false || northWall === false || southWall === false) return
+
+    // if (cells[i].textContent === '0' || cells[i].textContent === '') {
+
+    //   cells[i].classList.remove('cover')
+    //   if (cells[i].textContent === '0') cells[i].textContent = ''
+
+    if (westWall && northWestCell && !northWestCell.classList.contains('bomb')) {
+      northWestCell.classList.remove('cover')
+      if (northWestCell.textContent === '0') northWestCell.textContent = ''
+    }
+
+    if (northCell && !northCell.classList.contains('bomb')) {
+      northCell.classList.remove('cover')
+      if (northCell.textContent === '0') northCell.textContent = ''
+    }
+
+    if (eastWall && northEastCell && !northEastCell.classList.contains('bomb')) {
+      northEastCell.classList.remove('cover')
+      if (northEastCell.textContent === '0') northEastCell.textContent = ''
+    }
+
+    if (westWall && westCell && !westCell.classList.contains('bomb')) {
+      westCell.classList.remove('cover')
+      if (westCell.textContent === '0') westCell.textContent = ''
+    }
+
+    if (eastWall && eastCell && !eastCell.classList.contains('bomb')) {
+      eastCell.classList.remove('cover')
+      if (eastCell.textContent === '0') eastCell.textContent = ''
+    }
+
+    if (westWall && southWestCell && !southWestCell.classList.contains('bomb')) {
+      southWestCell.classList.remove('cover')
+      if (southWestCell.textContent === '0') southWestCell.textContent = ''
+    }
+
+    if (southCell && !southCell.classList.contains('bomb')) {
+      southCell.classList.remove('cover')
+      if (southCell.textContent === '0') southCell.textContent = ''
+    }
+
+    if (eastWall && southEastCell && !southEastCell.classList.contains('bomb')) {
+      southEastCell.classList.remove('cover')
+      if (southEastCell.textContent === '0') southEastCell.textContent = ''
+    }
+
+    return
   }
-   
-  
+
+
+
+  function floodFillNorth(i) {
+    const northWall = i > width
+    const northCell = cells[i - width]
+    
+    if (northWall === false) return
+    if (northCell && !northCell.classList.contains('bomb')) {
+      northCell.classList.remove('cover')
+      if (northCell.textContent === '0') northCell.textContent = ''
+      if (northCell.textContent > '0') return
+      findAdjCells(i - width)
+    }
+    floodFillNorth(i - width)
+  }
+
+  function floodFillNorthEast(i) {
+    const northEastCell = cells[i - width + 1]
+    const x = i % width
+    const eastWall = x < width - 1
+    const northWall = i > width
+
+    if (eastWall === false || northWall === false) return
+
+    if (northEastCell && !northEastCell.classList.contains('bomb')) {
+      northEastCell.classList.remove('cover')
+      if (northEastCell.textContent === '0') northEastCell.textContent = ''
+      if (northEastCell.textContent > 0) return
+      findAdjCells(i - width - 1)
+    }
+    floodFillNorthEast(i - width + 1)
+  }
+
+  function floodFillNorthWest(i) {
+    const x = i % width
+    const westWall = x > 0
+    const northWestCell = cells[i - width - 1]
+    const northWall = i > width
+
+    if (westWall === false || northWall === false) return
+    if (northWestCell && !northWestCell.classList.contains('bomb')) {
+      northWestCell.classList.remove('cover')
+      if (northWestCell.textContent === '0') northWestCell.textContent = ''
+      if (northWestCell.textContent > '0') return
+      findAdjCells(i - width - 1)
+    }
+    floodFillNorthWest(i - width - 1)
+  }
+
+  function floodFillEast(i) {
+    const eastCell = cells[i + 1]
+    const x = i % width
+    const eastWall = x < width - 1
+
+    if (eastWall === false) return
+    if (eastCell && !eastCell.classList.contains('bomb')) {
+      eastCell.classList.remove('cover')
+      if (eastCell.textContent === '0') eastCell.textContent = ''
+      if (eastCell.textContent > '0') return
+      findAdjCells(i + 1)
+    }
+    floodFillEast(i + 1)
+  }
+
+
+  function floodFillWest(i) {
+    const x = i % width
+    const westWall = x > 0
+
+    const westCell = cells[i - 1]
+    if (westWall === false) return
+
+    if (westCell && !westCell.classList.contains('bomb')) {
+      westCell.classList.remove('cover')
+      if (westCell.textContent === '0') westCell.textContent = ''
+      if (westCell.textContent > '0') return
+      findAdjCells(i - 1)
+    }
+    floodFillWest(i - 1)
+  }
+
+  function floodFillSouthEast(i) {
+    const southEastCell = cells[i + width + 1]
+
+    const x = i % width
+    const eastWall = x < width - 1
+    const southWall = i < cells.length - width
+    if (eastWall === false || southWall === false) return
+
+    if (southEastCell && !southEastCell.classList.contains('bomb')) {
+      southEastCell.classList.remove('cover')
+      if (southEastCell.textContent === '0') southEastCell.textContent = ''
+      if (southEastCell.textContent > '0') return 
+      findAdjCells(i + width + 1)
+    }
+    floodFillSouthEast(i + width + 1)
+  }
+
+  function floodFillSouthWest(i) {
+    const x = i % width
+    const westWall = x > 0
+    const southWestCell = cells[i + width - 1]
+    const southWall = i < cells.length - width
+    if (westWall === false || southWall === false) return
+
+    if (southWestCell && !southWestCell.classList.contains('bomb')) {
+      southWestCell.classList.remove('cover')
+      if (southWestCell.textContent === '0') southWestCell.textContent = ''
+      if (southWestCell.textContent > '0') return
+      findAdjCells(i + width - 1)
+    }
+    floodFillSouthWest(i + width - 1)
+  }
+
+  function floodFillSouth(i) {
+    const southWall = i < cells.length - width
+    const southCell = cells[i + width]
+
+    if (southWall === false) return
+    if (southCell && !southCell.classList.contains('bomb')) {
+      southCell.classList.remove('cover')
+      if (southCell.textContent === '0') southCell.textContent = ''
+      if (southCell.textContent > '0') return
+      findAdjCells(i + width)
+    }
+    floodFillSouth(i + width)
+  }
 
   // -------------------------- Add Flag on Right Click -------------------------------------
   function addFlag(event) {
@@ -302,6 +474,7 @@ function init() {
       )
       cells.forEach(cell => cell.removeEventListener('click', revealCell))
       cells.forEach(cell => cell.removeEventListener('contextmenu', addFlag))
+      cells.forEach(cell => cell.removeEventListener('long-press', addFlag))
       cells.forEach(cell => cell.removeEventListener('click', findAdjCells))
     }
   }
@@ -340,14 +513,15 @@ function init() {
     clearInterval(t)
     bombPositions = []
     flagPositions = []
-    // cells.forEach(cell => cell.textContent = '')
+   
     positionBombs()
     positionHints()
     coverGrid()
     clickCounter.textContent = 0
     clickCount = 0
-    cells.forEach(cell => cell.addEventListener('click', revealCell))
     cells.forEach(cell => cell.addEventListener('contextmenu', addFlag))
+    cells.forEach(cell => cell.addEventListener('long-press', addFlag))
+    cells.forEach(cell => cell.addEventListener('click', revealCell))
     cells.forEach(cell => cell.addEventListener('click', gameOver))
     cells.forEach(cell => cell.addEventListener('click', winGame))
     cells.forEach(cell => cell.addEventListener('contextmenu', winGame))
@@ -377,7 +551,7 @@ function init() {
   cells.forEach(cell => cell.addEventListener('click', gameOver))
   cells.forEach(cell => cell.addEventListener('click', revealCell))
   cells.forEach(cell => cell.addEventListener('contextmenu', addFlag))
-  // cells.forEach(cell => cell.addEventListener('click', setTime))
+  cells.forEach(cell => cell.addEventListener('long-press', addFlag))
   cells.forEach(cell => cell.addEventListener('click', winGame))
   cells.forEach(cell => cell.addEventListener('contextmenu', winGame))
   resetBtn.addEventListener('click', resetGame)
