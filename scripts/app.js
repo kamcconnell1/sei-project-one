@@ -250,17 +250,6 @@ function init() {
 
     const westWall = x > 0
     const eastWall = x < width - 1
-    // const northWall = i > width
-    // const southWall = i < cells.length - width
-
-
-    // if (cells[i].classList.contains('bomb')) return
-    // if (eastWall === false || westWall === false || northWall === false || southWall === false) return
-
-    // if (cells[i].textContent === '0' || cells[i].textContent === '') {
-
-    //   cells[i].classList.remove('cover')
-    //   if (cells[i].textContent === '0') cells[i].textContent = ''
 
     if (westWall && northWestCell && !northWestCell.classList.contains('bomb')) {
       northWestCell.classList.remove('cover')
@@ -512,7 +501,7 @@ function init() {
     clearInterval(t)
     bombPositions = []
     flagPositions = []
-   
+
     positionBombs()
     positionHints()
     coverGrid()
