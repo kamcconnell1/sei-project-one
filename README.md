@@ -4,7 +4,7 @@
 
 Minesweeper is a classic Windows PC game. The idea is to decide which tiles bombs are hidden under based on numbered clues revealed when a tile is clicked on. This was both my first project built using Javascript and the first project on the SEI course at General Aseembly, built in just over a week after three weeks on the course. 
 
-Launch on [GitHub Pages](https://kamcconnell1.github.io/sei-project-one/)
+See deployed version here: [Minesweeper](https://kamcconnell1.github.io/sei-project-one/)
 
 -----
 
